@@ -1,0 +1,1195 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Roadster Systems Guide</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout concept: a drafting sheet. Left, a realistic side cutaway of the car that lights up one system at a time. Right, a flip card per system (plain words on the front, the science on the back). Beige paper, ink lines, one accent colour per system. */
+:root{
+  --paper:#e8dcc4;
+  --sheet:#f4eddd;
+  --sheet-2:#ece2cc;
+  --rule:#b9a98a;
+  --ink:#26201a;
+  --ink-2:#5b5043;
+  --slate:#3f5b78;
+  --olive:#4f6a2c;
+  --red:#b8321f;
+  --amber:#96570a;
+  --teal:#0e6f75;
+  --accent:#26201a;
+  --ok:#3d7a3a;
+  --warn:#a9640f;
+  --bad:#b8321f;
+  --on-accent:#fff8ea;
+  --f-display:'Big Shoulders Display','Arial Narrow',Impact,sans-serif;
+  --f-body:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{color-scheme:light}
+body{
+  margin:0;
+  background-color:var(--paper);
+  background-image:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .28 0 0 0 0 .18 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  color:var(--ink);
+  font:400 16px/1.55 var(--f-body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:20px 48px;
+}
+.wrap{max-width:1240px;margin:0 auto}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+
+/* header */
+.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;padding-bottom:16px;border-bottom:2px solid var(--ink);margin-bottom:22px}
+.brand{display:flex;align-items:center;gap:14px;min-width:0}
+.mark{width:44px;height:44px;display:grid;place-items:center;background:var(--ink);color:var(--sheet);font:800 30px/1 var(--f-display);flex:none}
+.kicker{font:600 11px/1.2 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+h1{margin:2px 0 0;font:800 clamp(28px,5vw,40px)/1 var(--f-display);letter-spacing:.01em;text-transform:uppercase;text-wrap:balance}
+.tabs{display:flex;gap:0;border:1.5px solid var(--ink)}
+.tabs button{background:transparent;border:0;padding:9px 16px;font:600 12px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--ink);color:var(--sheet)}
+
+/* tour layout */
+.tour{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:24px;align-items:start;--accent:var(--ink)}
+.stage{min-width:0;position:sticky;top:12px}
+.deck{min-width:0}
+@media (max-width:920px){.tour{grid-template-columns:minmax(0,1fr)}.stage{position:static}}
+
+/* drafting sheet */
+.sheet{position:relative;background-color:var(--sheet);background-image:linear-gradient(rgba(150,128,90,.16) 1px,transparent 1px),linear-gradient(90deg,rgba(150,128,90,.16) 1px,transparent 1px);background-size:24px 24px;border:1px solid var(--rule);padding:12px 12px 8px}
+.sheet::before,.sheet::after{content:"";position:absolute;width:14px;height:14px;pointer-events:none;border:2px solid var(--accent)}
+.sheet::before{top:-1px;left:-1px;border-right:0;border-bottom:0}
+.sheet::after{bottom:-1px;right:-1px;border-left:0;border-top:0}
+.sheet-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+.seg{display:flex;border:1.5px solid var(--ink);background:var(--sheet)}
+.seg button{border:0;background:transparent;padding:7px 14px;font:600 12px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:8px}
+.seg button + button{border-left:1.5px solid var(--ink)}
+.seg button[aria-checked="true"]{background:var(--ink);color:var(--sheet)}
+.dotv{width:8px;height:8px;border-radius:50%;background:var(--ink-2)}
+.seg [data-v="road"] .dotv{background:var(--teal)}
+.seg [data-v="track"] .dotv{background:var(--amber)}
+.seg [data-v="hover"] .dotv{background:var(--red)}
+.btn{border:1.5px solid var(--ink);background:transparent;color:var(--ink);padding:9px 14px;font:600 12px var(--f-mono);letter-spacing:.09em;text-transform:uppercase;cursor:pointer;border-radius:2px}
+.btn:hover{background:var(--sheet-2)}
+.btn.solid{background:var(--ink);color:var(--sheet)}
+.btn.solid:hover{background:#3b332a}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.btn.fire{border-color:var(--red);color:var(--red)}
+.btn.fire:hover{background:var(--red);color:var(--on-accent)}
+.sheet-foot{display:flex;justify-content:space-between;gap:12px;font:500 10.5px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);padding-top:4px}
+#car{display:block;width:100%;height:auto;max-width:100%}
+
+/* car drawing */
+.road{fill:#d5c7a8}
+.roadline{stroke:#26201a;stroke-width:1.5;fill:none}
+.roadhatch{stroke:#b9a98a;stroke-width:1}
+.sys{transition:opacity .35s ease,filter .35s ease}
+.sys.dim{opacity:.3}
+.sys.on{filter:drop-shadow(0 0 4px color-mix(in srgb,var(--accent) 55%,transparent))}
+.hl{filter:drop-shadow(0 0 3px var(--accent)) drop-shadow(0 0 6px color-mix(in srgb,var(--accent) 60%,transparent))}
+.plenum{fill:#cfe3e0;stroke:var(--teal);stroke-width:1.5}
+.fanhouse{fill:#e6f1ef;stroke:var(--teal);stroke-width:1.5}
+.blades{stroke:var(--teal);stroke-width:8;fill:none;stroke-dasharray:3 4}
+.skirt{fill:#2a241c}
+.batt{fill:#efd29b;stroke:var(--amber);stroke-width:1.5}
+.cells{stroke:#c28a2c;stroke-width:1;fill:none}
+.motor{fill:url(#metal);stroke:#6b655a;stroke-width:1.5}
+.winding{stroke:var(--amber);stroke-width:2;fill:none}
+.frame{fill:#b8b3a5;stroke:#6b655a;stroke-width:1}
+.cable{stroke:var(--amber);stroke-width:3;fill:none}
+.tank{fill:#f2cfc6;stroke:var(--red);stroke-width:1.5}
+.tankwrap{stroke:#a82b1a;stroke-width:1;fill:none;opacity:.55}
+.nozzle{fill:url(#metal);stroke:#6b655a;stroke-width:1.2}
+.comp{fill:url(#metal);stroke:#6b655a;stroke-width:1.5}
+.tub{fill:none;stroke:url(#weave);stroke-width:6;stroke-linecap:round}
+.seat{fill:url(#weave);stroke:var(--olive);stroke-width:1.5}
+.suit{stroke:#55606a;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.imu{fill:var(--olive)}
+.ping{fill:none;stroke:var(--olive);stroke-width:1.5;transform-box:fill-box;transform-origin:center;animation:ping 1.6s ease-out infinite}
+.pin{cursor:pointer}
+.pin circle{fill:var(--ink);stroke:var(--sheet);stroke-width:2;transition:fill .2s}
+.pin text{fill:var(--sheet);font:700 11px var(--f-mono);text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.pin.active circle{fill:var(--accent)}
+.pin:hover circle{fill:var(--accent)}
+.pin.off{opacity:.35}
+.fx{opacity:0;transition:opacity .4s}
+.fx.show{opacity:1}
+.flow{stroke-dasharray:5 6;animation:flow .9s linear infinite}
+.blades{animation:flow .5s linear infinite}
+.puff{fill:#fffdf6;stroke:#d9d2c0;stroke-width:1;transform-box:fill-box;transform-origin:center;opacity:0;animation:puff 1.1s ease-out infinite}
+.puffd{animation-name:puffd}
+.plume{display:none}
+#car.firing .plume{display:inline}
+#car.v-road .jets{display:none}
+#car:not(.v-hover) .hoveronly{display:none}
+@keyframes flow{to{stroke-dashoffset:-22}}
+@keyframes ping{0%{transform:scale(.6);opacity:.9}100%{transform:scale(2);opacity:0}}
+@keyframes puff{0%{transform:translate(0,0) scale(.35);opacity:.95}100%{transform:translate(-86px,var(--dy,0px)) scale(2.4);opacity:0}}
+@keyframes puffd{0%{transform:translate(0,0) scale(.35);opacity:.95}100%{transform:translate(var(--dx,0px),22px) scale(2.2);opacity:0}}
+
+/* exploded view */
+.ex{display:flex;align-items:center;gap:10px;flex:1 1 200px;min-width:0}
+.ex input{flex:1;min-width:80px;accent-color:var(--accent)}
+.sys[data-sys="1"]{transform:translateY(calc(var(--ex,0) * -85px))}
+.sys[data-sys="2"]{transform:translateY(calc(var(--ex,0) * -42px))}
+.sys[data-sys="3"]{transform:translateX(calc(var(--ex,0) * -45px))}
+.sys[data-sys="4"]{transform:translateY(calc(var(--ex,0) * 38px))}
+.sys[data-sys="5"]{transform:translateY(calc(var(--ex,0) * 80px))}
+.fx[data-fx="4"]{transform:translateY(calc(var(--ex,0) * 38px))}
+.fx5low{transform:translateY(calc(var(--ex,0) * 80px))}
+.cavity{opacity:calc(1 - var(--ex,0))}
+.road,.roadhatch,.roadline,.shadow{opacity:calc(1 - var(--ex,0) * .8)}
+.guide{opacity:calc(var(--ex,0) * .7)}
+
+.tg{display:inline-block;margin-left:8px;padding:1px 5px;border:1px solid currentColor;border-radius:2px;font:600 9.5px/1.3 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;font-style:normal;vertical-align:1px}
+.tg-t{color:var(--ok)}
+.tg-m{color:var(--amber)}
+.tg-n{color:var(--ink-2);border-style:dashed}
+.facts dd{max-width:60%}
+.blk h4{margin:0 0 4px;font:700 19px/1.1 var(--f-display);letter-spacing:.03em;text-transform:uppercase;color:var(--accent)}
+.blk p{margin:0 0 6px;font-size:15px;line-height:1.5}
+.blk ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:4px}
+.blk li{position:relative;padding-left:18px;font-size:14.5px;line-height:1.45}
+.blk li::before{content:"";position:absolute;left:2px;top:.5em;width:8px;height:8px;border-radius:50%}
+.blk li.ok::before{background:var(--ok)}
+.blk li.no::before{border:1.5px dashed var(--ink-2)}
+.face.back{gap:12px}
+.src{margin-top:32px;padding-top:16px;border-top:2px solid var(--ink);max-width:80ch}
+.src h2{margin:0 0 6px;font:800 24px/1 var(--f-display);text-transform:uppercase}
+.src p{margin:0 0 8px;font-size:14px;color:var(--ink-2)}
+.src ul{margin:0;padding-left:18px;font-size:14px}
+.src a{color:var(--ink);text-underline-offset:2px}
+/* demo sim */
+.sim-note{max-width:84ch;margin:0 0 14px;padding:10px 14px;border:1.5px dashed var(--amber);background:rgba(150,87,10,.07);font-size:14.5px;line-height:1.5}
+.sim-note b{color:var(--amber)}
+.sim-stage{position:relative;border:1px solid var(--ink);background:#14110d;line-height:0}
+.sim-wrap{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px;align-items:start;--accent:var(--red)}
+.sim-left{min-width:0;display:flex;flex-direction:column;gap:10px;position:sticky;top:12px}
+.sim-right{min-width:0;display:flex;flex-direction:column;gap:20px}
+.sim-bar{align-items:center}
+@media (max-width:920px){.sim-wrap{grid-template-columns:minmax(0,1fr)}.sim-left{position:static}}
+#simCv{display:block;width:100%;height:auto;aspect-ratio:16/9;max-width:100%}
+.panel{position:relative;background:var(--sheet);border:1px solid var(--rule);padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.panel::before,.panel::after{content:"";position:absolute;width:14px;height:14px;border:2px solid var(--accent);pointer-events:none}
+.panel::before{top:-1px;left:-1px;border-right:0;border-bottom:0}
+.panel::after{bottom:-1px;right:-1px;border-left:0;border-top:0}
+.panel h2{margin:0;font:800 28px/1 var(--f-display);text-transform:uppercase}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+.ctl label.l{display:flex;justify-content:space-between;gap:10px;font:500 12px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);margin-bottom:4px}
+.ctl label.l b{color:var(--ink);font-weight:600;text-align:right}
+.ctl input[type=range]{width:100%;accent-color:var(--teal);margin:0}
+.chk{display:flex;align-items:center;gap:10px;font-size:15px}
+.chk input{width:18px;height:18px;accent-color:var(--red);margin:0}
+.hint{margin:0;font-size:13.5px;color:var(--ink-2);line-height:1.45}
+.phases{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none}
+.phases li{padding:5px 9px;border:1.5px solid var(--rule);font:600 11px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.phases li.done{border-color:var(--ok);color:var(--ok)}
+.phases li[aria-current="step"]{background:var(--ink);border-color:var(--ink);color:var(--sheet)}
+.read{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;margin:0;background:var(--rule);border:1px solid var(--rule)}
+.read div{padding:8px 10px;background:var(--sheet);min-width:0}
+.read dt{font:500 10.5px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.read dd{margin:2px 0 0;font:700 20px/1.1 var(--f-display);letter-spacing:.02em;text-transform:uppercase;overflow-wrap:anywhere}
+@media (max-width:520px){.read{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.grip{display:flex;flex-direction:column;gap:6px}
+.grip .t{display:flex;justify-content:space-between;gap:10px;font:500 12px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.grip .t b{color:var(--ink);font-weight:600;text-align:right}
+.gbar{position:relative;height:12px;background:var(--sheet-2);border:1px solid var(--rule)}
+.gbar i{position:absolute;inset:0 auto 0 0;width:0;background:var(--ok);transition:width .12s}
+.gbar::after{content:"";position:absolute;left:50%;top:-4px;bottom:-4px;width:2px;background:var(--ink)}
+.eq{margin:0;white-space:pre-wrap;font:500 13px/1.55 var(--f-mono);padding:10px 12px;background:var(--sheet-2);border-left:3px solid var(--red);overflow-wrap:anywhere}
+.sci{margin:0;font-size:15.5px;line-height:1.55;max-width:62ch}
+.res{margin:0;padding:10px 12px;border:1.5px solid var(--ink);font:700 18px/1.2 var(--f-display);letter-spacing:.03em;text-transform:uppercase}
+details.assume{margin-top:16px;max-width:84ch;border:1px solid var(--rule);background:var(--sheet);padding:10px 14px}
+details.assume summary{cursor:pointer;font:600 12px var(--f-mono);letter-spacing:.1em;text-transform:uppercase}
+details.assume ul{margin:10px 0 0;padding-left:18px;font-size:14.5px;line-height:1.5}
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin:12px 0 0;border:1px solid var(--rule);background:var(--sheet)}
+.stats div{padding:10px 12px;min-width:0;border-left:1px solid var(--rule)}
+.stats div:first-child{border-left:0}
+.stats dt{font:500 10.5px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.stats dd{margin:2px 0 0;font:700 19px/1.15 var(--f-display);letter-spacing:.02em;text-transform:uppercase;overflow-wrap:anywhere;display:flex;align-items:center;gap:7px}
+.stats .st{width:9px;height:9px;border-radius:50%;flex:none;background:var(--ok)}
+@media (max-width:640px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stats div:nth-child(3){border-left:0}.stats div:nth-child(n+3){border-top:1px solid var(--rule)}.pins{display:none}}
+
+/* flip card */
+.card{perspective:1600px}
+.card-inner{display:grid;transition:transform .6s cubic-bezier(.2,.7,.2,1);transform-style:preserve-3d}
+.card.flipped .card-inner{transform:rotateY(180deg)}
+.face{grid-area:1/1;position:relative;min-width:0;background:var(--sheet);border:1px solid var(--rule);padding:22px 22px 20px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;gap:14px}
+.face.back{transform:rotateY(180deg);background:var(--sheet-2)}
+.face::before,.face::after{content:"";position:absolute;width:14px;height:14px;border:2px solid var(--accent);pointer-events:none}
+.face::before{top:-1px;left:-1px;border-right:0;border-bottom:0}
+.face::after{bottom:-1px;right:-1px;border-left:0;border-top:0}
+.eyebrow{margin:0;font:600 11px/1.3 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.face h2,.face h3{margin:0;font:800 clamp(34px,5vw,46px)/.95 var(--f-display);text-transform:uppercase;letter-spacing:.01em;text-wrap:balance}
+.face h3{font-size:clamp(30px,4.4vw,40px)}
+.lead{margin:0;font-size:16px;max-width:60ch}
+.note{margin:0;padding:10px 12px;border:1.5px dashed var(--red);color:var(--red);font:500 13px/1.45 var(--f-body);background:rgba(184,50,31,.06)}
+.facts{margin:0;display:flex;flex-direction:column}
+.facts div{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:8px 0;border-bottom:1px dashed var(--rule)}
+.facts div:first-child{border-top:1px dashed var(--rule)}
+.facts dt{font:500 11px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);min-width:0}
+.facts dd{margin:0;font:700 21px/1.1 var(--f-display);letter-spacing:.02em;text-align:right;text-transform:uppercase;min-width:0}
+.parts-h{font:600 11px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--rule);background:var(--sheet);padding:7px 12px;font:500 14px var(--f-body);cursor:pointer;border-radius:2px}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.part-text{margin:0;min-height:3.1em;font-size:15px;color:var(--ink)}
+.face-actions{margin-top:auto;display:flex;gap:10px;flex-wrap:wrap}
+.terms{margin:0;display:flex;flex-direction:column;gap:12px}
+.terms dt{font:700 20px/1.1 var(--f-display);text-transform:uppercase;letter-spacing:.02em}
+.terms dd{margin:2px 0 0;font-size:15px;color:var(--ink-2)}
+.oneline{margin:0;padding:12px 14px;border:1.5px solid var(--accent);background:var(--sheet);font-size:15px}
+.oneline span{display:block;font:600 10.5px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:3px}
+.vers{display:flex;flex-direction:column;gap:10px}
+.ver{text-align:left;background:var(--sheet);border:1.5px solid var(--rule);padding:12px 14px;cursor:pointer;display:grid;gap:4px;border-radius:2px}
+.ver:hover{border-color:var(--ink)}
+.ver[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink);background:var(--sheet-2)}
+.ver b{font:800 24px/1 var(--f-display);text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.ver span.d{font-size:14px;color:var(--ink-2)}
+.ver span.r{font:500 12px var(--f-mono);letter-spacing:.04em;color:var(--ink)}
+
+.nav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px}
+.dots{list-style:none;margin:0;padding:0;display:flex;gap:6px;align-items:center}
+.dots button{width:12px;height:12px;border-radius:50%;border:1.5px solid var(--ink);background:transparent;padding:0;cursor:pointer}
+.dots button[aria-current="step"]{background:var(--accent);border-color:var(--accent);transform:scale(1.25)}
+.pg{font:500 11px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);text-align:center;margin-top:8px}
+
+/* flashcards */
+.fc-wrap{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+.fc-meta{display:flex;justify-content:space-between;gap:12px;font:600 11px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.fc{perspective:1600px;border:0;background:none;padding:0;text-align:left;cursor:pointer;width:100%}
+.fc .card-inner{min-height:300px}
+.fc.flipped .card-inner{transform:rotateY(180deg)}
+.fc .face{justify-content:center;gap:12px;min-height:300px}
+.fc .q{margin:0;font:800 clamp(30px,6vw,44px)/1.02 var(--f-display);text-transform:uppercase;text-wrap:balance}
+.fc .a{margin:0;font-size:19px;line-height:1.5}
+.fc .hint{font:500 11px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin-top:6px}
+.fc-actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between}
+.fc-actions .grp{display:flex;gap:10px;flex-wrap:wrap}
+.btn.known[aria-pressed="true"]{background:var(--ok);border-color:var(--ok);color:#fff}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  .puff{opacity:.6}
+}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <div class="mark" aria-hidden="true">R</div>
+      <div>
+        <div class="kicker">Next-gen Roadster</div>
+        <h1>Systems guide</h1>
+      </div>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Guide sections">
+      <button role="tab" id="tab-tour" aria-selected="true" aria-controls="tour">Tour</button>
+      <button role="tab" id="tab-sim" aria-selected="false" aria-controls="sim">Demo sim</button>
+      <button role="tab" id="tab-cards" aria-selected="false" aria-controls="cards">Flashcards</button>
+    </div>
+  </header>
+
+  <main id="tour" class="tour" role="tabpanel" aria-labelledby="tab-tour">
+    <section class="stage" aria-label="Car cutaway">
+      <div class="sheet">
+        <div class="sheet-bar">
+          <div class="seg" role="radiogroup" aria-label="Roadster version: Performance, Thrust or Rocket">
+            <button role="radio" data-v="road" aria-checked="false"><i class="dotv"></i>Performance</button>
+            <button role="radio" data-v="track" aria-checked="true"><i class="dotv"></i>Thrust</button>
+            <button role="radio" data-v="hover" aria-checked="false"><i class="dotv"></i>Rocket</button>
+          </div>
+          <div class="ex"><button class="btn" id="exBtn">Pull apart</button><input type="range" id="ex" min="0" max="100" value="0" aria-label="Pull the layers apart"></div>
+          <button class="btn fire" id="fireBtn" hidden>Fire the jets</button>
+        </div>
+
+        <svg id="car" viewBox="30 54 890 280" role="img" aria-label="Illustrated side cutaway of the Roadster showing the body, cockpit, thrusters, battery and motors, and suction fans. Part positions are estimates.">
+          <defs>
+            <linearGradient id="paint" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fdfbf5"/><stop offset=".55" stop-color="#ebe5d6"/><stop offset="1" stop-color="#c9bfaa"/></linearGradient>
+            <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6dc8e"/><stop offset=".6" stop-color="#c39a3a"/><stop offset="1" stop-color="#85601a"/></linearGradient>
+            <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4f1ea"/><stop offset=".5" stop-color="#a7a090"/><stop offset="1" stop-color="#e0dbd0"/></linearGradient>
+            <radialGradient id="tire" cx=".5" cy=".5" r=".5"><stop offset=".72" stop-color="#1b1713"/><stop offset="1" stop-color="#3c362e"/></radialGradient>
+            <pattern id="weave" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="8" height="8" fill="#2d2924"/><path d="M0 0h4v4H0zM4 4h4v4H4z" fill="#3e3931"/></pattern>
+            <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#0e6f75"/></marker>
+            <filter id="soft"><feGaussianBlur stdDeviation="4"/></filter>
+            <clipPath id="bodyClip"><path d="M118 270L118 238C118 220 132 208 156 202L310 172C350 146 405 126 475 124C535 123 580 140 622 160L735 184C800 194 850 210 872 238C880 250 880 262 874 270Z"/></clipPath>
+            <g id="wheel">
+              <circle r="50" fill="url(#tire)"/>
+              <circle r="45" fill="none" stroke="#0f0d0b" stroke-opacity=".6" stroke-width="1.5"/>
+              <circle r="35" fill="url(#metal)"/>
+              <circle r="28" fill="#d9d4c8" stroke="#8c857a"/>
+              <circle r="22" fill="none" stroke="#5a544a" stroke-width="3"/>
+              <rect x="10" y="-25" width="15" height="11" rx="2" fill="#b8321f"/>
+              <g stroke="#7a7367" stroke-width="7" stroke-linecap="round">
+                <path d="M0 0V-26"/><path d="M0 0V-26" transform="rotate(72)"/><path d="M0 0V-26" transform="rotate(144)"/><path d="M0 0V-26" transform="rotate(216)"/><path d="M0 0V-26" transform="rotate(288)"/>
+              </g>
+              <circle r="8" fill="#3a352d"/><circle r="3" fill="#cfc8ba"/>
+            </g>
+          </defs>
+
+          <!-- road -->
+          <rect class="road" x="20" y="300" width="920" height="32"/>
+          <path class="roadhatch" d="M40 332l14-32M90 332l14-32M140 332l14-32M190 332l14-32M240 332l14-32M290 332l14-32M340 332l14-32M390 332l14-32M440 332l14-32M490 332l14-32M540 332l14-32M590 332l14-32M640 332l14-32M690 332l14-32M740 332l14-32M790 332l14-32M840 332l14-32M890 332l14-32"/>
+          <path class="roadline" d="M20 300H940"/>
+          <ellipse class="shadow" cx="500" cy="303" rx="400" ry="7" fill="#26201a" fill-opacity=".38" filter="url(#soft)"/>
+
+          <path class="guide" d="M490 24V384" fill="none" stroke="#5b5043" stroke-width="1.5" stroke-dasharray="6 6"/>
+          <!-- shell skin -->
+          <g class="sys" data-sys="1">
+            <path data-part="paint" d="M118 270L118 238C118 220 132 208 156 202L310 172C350 146 405 126 475 124C535 123 580 140 622 160L735 184C800 194 850 210 872 238C880 250 880 262 874 270Z" fill="url(#paint)" stroke="#4a4236" stroke-width="2"/>
+          </g>
+          <!-- cavity -->
+          <path class="cavity" d="M131 262L131 240C131 228 141 218 162 212L316 182C354 158 408 138 476 136C532 135 574 150 614 168L732 194C792 203 836 216 856 240C862 250 862 258 860 262Z" fill="#e3d6ba" stroke="#8f8368" stroke-width="1.2"/>
+
+          <!-- floor fans -->
+          <g class="sys" data-sys="5">
+            <rect class="plenum" x="348" y="254" width="284" height="16" rx="3"/>
+            <g data-part="fans">
+              <g transform="translate(435 262)"><ellipse class="fanhouse" rx="36" ry="7"/><path class="blades" d="M-30 0H30"/></g>
+              <g transform="translate(545 262)"><ellipse class="fanhouse" rx="36" ry="7"/><path class="blades" d="M-30 0H30"/></g>
+            </g>
+            <g data-part="skirts"><rect class="skirt" x="342" y="270" width="7" height="22"/><rect class="skirt" x="631" y="270" width="7" height="22"/></g>
+          </g>
+
+          <!-- battery and motors -->
+          <g class="sys" data-sys="4">
+            <g data-part="battery"><rect class="batt" x="348" y="228" width="284" height="24" rx="4"/><path class="cells" d="M368 228V252M388 228V252M408 228V252M428 228V252M448 228V252M468 228V252M488 228V252M508 228V252M528 228V252M548 228V252M568 228V252M588 228V252M608 228V252"/></g>
+            <g data-part="motors">
+              <rect class="motor" x="312" y="232" width="32" height="30" rx="5"/><path class="winding" d="M318 240H338M318 247H338M318 254H338"/>
+              <rect class="motor" x="636" y="232" width="32" height="30" rx="5"/><path class="winding" d="M642 240H662M642 247H662M642 254H662"/>
+            </g>
+            <g data-part="frames"><path class="frame" d="M306 262H350L346 268H310Z"/><path class="frame" d="M630 262H674L670 268H634Z"/></g>
+            <path class="cable" d="M344 240H348M632 240H636"/>
+          </g>
+
+          <!-- air jets -->
+          <g class="sys jets" data-sys="3">
+            <g data-part="tanks">
+              <rect class="tank" x="134" y="213" width="54" height="17" rx="8.5"/>
+              <rect class="tank" x="134" y="234" width="54" height="17" rx="8.5"/>
+              <path class="tankwrap" d="M146 213l8 17M160 213l8 17M174 213l8 17M146 234l8 17M160 234l8 17M174 234l8 17"/>
+            </g>
+            <g data-part="nozzles">
+              <path class="nozzle" transform="translate(0 221.5)" d="M134 -5L124 -3L118 -7L108 -10L108 10L118 7L124 3L134 5Z"/>
+              <path class="nozzle" transform="translate(0 242.5)" d="M134 -5L124 -3L118 -7L108 -10L108 10L118 7L124 3L134 5Z"/>
+            </g>
+            <g data-part="compressor"><rect class="comp" x="794" y="232" width="40" height="26" rx="4"/><circle cx="814" cy="245" r="8" fill="#eee9dd" stroke="#6b655a"/><path d="M806 245H822M814 237V253" stroke="#6b655a" stroke-width="1.5"/></g>
+            <g class="hoveronly">
+              <g data-part="nozzles"><path class="nozzle" transform="translate(170 270)" d="M-5 0L-3 8L-8 14L-13 24L13 24L8 14L3 8L5 0Z"/><path class="nozzle" transform="translate(850 268)" d="M-5 0L-3 8L-8 14L-13 24L13 24L8 14L3 8L5 0Z"/></g>
+              <g data-part="tanks"><rect class="tank" x="352" y="192" width="56" height="14" rx="7"/><rect class="tank" x="352" y="209" width="56" height="14" rx="7"/></g>
+            </g>
+            <g class="plume">
+              <circle class="puff" style="--dy:-6px;animation-delay:0s" cx="104" cy="221" r="9"/>
+              <circle class="puff" style="--dy:-12px;animation-delay:.22s" cx="104" cy="221" r="9"/>
+              <circle class="puff" style="--dy:-4px;animation-delay:.44s" cx="104" cy="221" r="9"/>
+              <circle class="puff" style="--dy:-9px;animation-delay:.66s" cx="104" cy="221" r="9"/>
+              <circle class="puff" style="--dy:6px;animation-delay:.1s" cx="104" cy="243" r="9"/>
+              <circle class="puff" style="--dy:12px;animation-delay:.32s" cx="104" cy="243" r="9"/>
+              <circle class="puff" style="--dy:4px;animation-delay:.54s" cx="104" cy="243" r="9"/>
+              <circle class="puff" style="--dy:9px;animation-delay:.76s" cx="104" cy="243" r="9"/>
+            </g>
+            <g class="plume hoveronly">
+              <circle class="puff puffd" style="--dx:-38px;animation-delay:0s" cx="170" cy="296" r="8"/>
+              <circle class="puff puffd" style="--dx:30px;animation-delay:.3s" cx="170" cy="296" r="8"/>
+              <circle class="puff puffd" style="--dx:-24px;animation-delay:.6s" cx="170" cy="296" r="8"/>
+              <circle class="puff puffd" style="--dx:36px;animation-delay:.15s" cx="850" cy="294" r="8"/>
+              <circle class="puff puffd" style="--dx:-30px;animation-delay:.45s" cx="850" cy="294" r="8"/>
+              <circle class="puff puffd" style="--dx:22px;animation-delay:.75s" cx="850" cy="294" r="8"/>
+            </g>
+          </g>
+
+          <!-- cockpit -->
+          <g class="sys" data-sys="2">
+            <path data-part="tub" class="tub" d="M336 228V186C352 162 402 146 470 144C530 143 572 156 606 174L612 228"/>
+            <path data-part="seat" class="seat" d="M414 227V192C414 185 420 182 426 184L438 188L442 214L506 218C514 219 516 227 506 227Z"/>
+            <g data-part="seat">
+              <circle cx="468" cy="154" r="12" fill="#d3a77f" stroke="#8a6648"/>
+              <path class="suit" stroke-width="20" d="M446 176L458 208"/>
+              <path class="suit" stroke-width="8" d="M452 178L506 184L544 176"/>
+              <path class="suit" stroke-width="11" stroke="#3d4650" d="M460 208L522 212L560 226"/>
+            </g>
+            <g data-part="yoke">
+              <ellipse cx="548" cy="172" rx="6" ry="16" fill="none" stroke="#26201a" stroke-width="4"/>
+              <path d="M548 188L560 193" stroke="#26201a" stroke-width="3"/>
+              <rect x="556" y="184" width="46" height="22" rx="7" fill="url(#weave)" stroke="#4f6a2c"/>
+            </g>
+                      </g>
+
+          <!-- wheels -->
+          <g class="cavity" clip-path="url(#bodyClip)"><circle cx="250" cy="250" r="58" fill="#2a241c"/><circle cx="730" cy="250" r="58" fill="#2a241c"/></g>
+          <use data-part="wheels" href="#wheel" x="250" y="250"/>
+          <use data-part="wheels" href="#wheel" x="730" y="250"/>
+
+          <!-- shell details -->
+          <g class="sys" data-sys="1">
+            <path d="M300 205C420 198 560 206 704 214" fill="none" stroke="#a39880" stroke-width="1"/>
+            <path data-part="paint" d="M160 206L300 178M640 168L735 190" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="3" stroke-linecap="round"/>
+            <path data-part="glass" d="M330 176C372 148 424 134 476 133C524 133 562 148 598 166L560 178Z" fill="url(#glass)" fill-opacity=".72" stroke="#4a3810" stroke-width="1.5"/>
+            <path d="M352 170C392 150 432 142 470 141" fill="none" stroke="#fff" stroke-opacity=".75" stroke-width="3" stroke-linecap="round"/>
+            <g data-part="flap"><path d="M138 205L178 194L181 200L142 211Z" fill="#26201a"/><circle cx="140" cy="208" r="3.5" fill="#96570a"/></g>
+            <path data-part="lights" d="M826 208C840 211 852 216 861 223" fill="none" stroke="#e7a400" stroke-width="6" stroke-linecap="round" stroke-opacity=".5"/>
+            <path data-part="lights" d="M826 208C840 211 852 216 861 223" fill="none" stroke="#fffdf4" stroke-width="3" stroke-linecap="round"/>
+          </g>
+
+          <!-- effects -->
+          <g class="fx" data-fx="5">
+            <g stroke="#0e6f75" stroke-width="2.5" fill="none" marker-end="url(#ah)">
+              <path class="flow" d="M410 62V112" marker-end="url(#ah)"/><path class="flow" d="M455 62V108" marker-end="url(#ah)"/><path class="flow" d="M500 62V108" marker-end="url(#ah)"/><path class="flow" d="M545 62V112" marker-end="url(#ah)"/><path class="flow" d="M590 62V122" marker-end="url(#ah)"/>
+            </g>
+            <g class="fx5low" stroke="#0e6f75" stroke-width="2" fill="none">
+              <path class="flow" d="M405 297V277" marker-end="url(#ah)"/><path class="flow" d="M470 297V277" marker-end="url(#ah)"/><path class="flow" d="M510 297V277" marker-end="url(#ah)"/><path class="flow" d="M575 297V277" marker-end="url(#ah)"/>
+            </g>
+          </g>
+          <path class="fx flow" data-fx="4" d="M348 222H632" stroke="#96570a" stroke-width="3" fill="none"/>
+
+          <!-- pins -->
+          <g class="pins">
+            <g class="pin" data-go="1" role="button" tabindex="0" aria-label="Go to the shell" transform="translate(584 160)"><circle r="10"/><text>1</text></g>
+            <g class="pin" data-go="2" role="button" tabindex="0" aria-label="Go to the cockpit" transform="translate(430 205)"><circle r="10"/><text>2</text></g>
+            <g class="pin" data-go="3" role="button" tabindex="0" aria-label="Go to the air jets" transform="translate(161 232)"><circle r="10"/><text>3</text></g>
+            <g class="pin" data-go="4" role="button" tabindex="0" aria-label="Go to battery and motors" transform="translate(490 240)"><circle r="10"/><text>4</text></g>
+            <g class="pin" data-go="5" role="button" tabindex="0" aria-label="Go to the floor fans" transform="translate(490 262)"><circle r="10"/><text>5</text></g>
+          </g>
+        </svg>
+        <div class="sheet-foot"><span>Illustration, not a Tesla drawing</span><span>Part positions are estimates</span></div>
+      </div>
+
+      <dl class="stats" aria-label="Key facts for the chosen version">
+        <div><dt>0 to 60 mph</dt><dd id="st-accel"></dd></div>
+        <div><dt>Seats</dt><dd id="st-seats"></dd></div>
+        <div><dt>Public roads</dt><dd><i class="st" id="st-dot"></i><span id="st-legal"></span></dd></div>
+        <div><dt>Reservation</dt><dd id="st-dep"></dd></div>
+      </dl>
+    </section>
+
+    <section class="deck" aria-label="Guide pages">
+      <div class="card" id="card"></div>
+      <div class="nav">
+        <button class="btn" id="prev">Back</button>
+        <ol class="dots" id="dots"></ol>
+        <button class="btn solid" id="next">Next</button>
+      </div>
+      <div class="pg" id="pg"></div>
+    </section>
+  </main>
+
+    <main id="sim" role="tabpanel" aria-labelledby="tab-sim" hidden>
+    <p class="sim-note"><b>Educational model, not Tesla’s data.</b> Tesla has not published the ramp size, speeds, fan force, thruster force or car weight. The numbers here are assumptions chosen so the physics is easy to see. What was reported from the event: the car drove up a curved ramp, suction fans kept it attached as it turned upside down, and thrusters launched it, flipped it and landed it.</p>
+    <div class="sim-wrap">
+      <div class="sim-left">
+        <div class="sim-stage"><canvas id="simCv" width="960" height="540" role="img" aria-label="Side view of the Roadster driving up a tall curved ramp, going upside down, then flipping in the air and landing"></canvas></div>
+        <div class="row sim-bar">
+          <button class="btn solid" id="simGo">Launch</button>
+          <button class="btn" id="simReset">Reset</button>
+          <label class="chk" for="simSlow"><input type="checkbox" id="simSlow">Slow motion</label>
+        </div>
+        <div class="row sim-bar"><span class="hint">Quick tests, same ramp:</span><button class="chip" id="pDemo">Demo day</button><button class="chip" id="pNoFan">No fans</button><button class="chip" id="pNoThr">No thrusters</button></div>
+      </div>
+      <div class="sim-right">
+        <section class="panel" aria-label="Controls">
+          <h2>Controls</h2>
+          <div class="ctl"><label class="l" for="simSpeed">Entry speed <b id="vSpeed"></b></label><input type="range" id="simSpeed" min="8" max="24" step="1" value="12"></div>
+          <div class="ctl"><label class="l" for="simFan">Fan suction <b id="vFan"></b></label><input type="range" id="simFan" min="0" max="2" step="0.1" value="1"></div>
+          <label class="chk" for="simThr"><input type="checkbox" id="simThr" checked>Thrusters around the car (Rocket version)</label>
+          <p class="hint">You can move the sliders while the car is running.</p>
+        </section>
+        <section class="panel" aria-label="The science, live">
+          <h2>The science, live</h2>
+          <ol class="phases" id="simPhases"><li>Run-up</li><li>Climb</li><li>Upside down</li><li>Flip</li><li>Landing</li></ol>
+          <p class="sci" id="simTxt" aria-live="polite"></p>
+          <pre class="eq" id="simEq"></pre>
+          <dl class="read">
+            <div><dt>Speed</dt><dd id="rdSpeed"></dd></div>
+            <div><dt>Height</dt><dd id="rdHeight"></dd></div>
+            <div><dt>Car angle</dt><dd id="rdAngle"></dd></div>
+            <div><dt>Ramp pushes</dt><dd id="rdPush"></dd></div>
+            <div><dt>Fans push</dt><dd id="rdFan"></dd></div>
+            <div><dt>Spin</dt><dd id="rdSpin"></dd></div>
+          </dl>
+          <div class="grip"><div class="t"><span>Tyre grip</span><b id="rdGrip"></b></div><div class="gbar"><i id="gripFill"></i></div></div>
+          <p class="res" id="simRes" hidden></p>
+        </section>
+      </div>
+    </div>
+    <details class="assume">
+      <summary>What this model assumes</summary>
+      <ul>
+        <li>Ramp radius 22 m, ending 120° around the curve, so the car finishes past the vertical wall and upside down. Drawn to look like the ramp in the demo photos. The real size is not published.</li>
+        <li>Tyre grip μ = 1.1, a typical value for performance tyres. Motor push limit 1.7 g, worked out from Tesla’s quoted 0 to 60 mph in under 1.6 s (26.8 m/s ÷ 1.6 s).</li>
+        <li>The car is treated as a single point 0.42 m above the surface, 4.2 m long on screen, with no air drag. Everything is measured in multiples of the car’s weight, so the weight cancels out.</li>
+        <li>Fan suction is whatever you set with the slider. Thrusters only control spin, so the model needs no thrust figure. In the demo Tesla says thrusters also launched the car off the ramp.</li>
+        <li>One report says the demo car was remote-operated. Here the car follows a simple cruise-control rule.</li>
+      </ul>
+    </details>
+  </main>
+
+  <main id="cards" role="tabpanel" aria-labelledby="tab-cards" hidden>
+    <div class="fc-wrap">
+      <div class="fc-meta"><span id="fcCount"></span><span id="fcKnown"></span></div>
+      <button class="fc" id="fc" aria-label="Flashcard. Press to flip."></button>
+      <div class="fc-actions">
+        <div class="grp"><button class="btn" id="fcPrev">Back</button><button class="btn solid" id="fcNext">Next</button></div>
+        <div class="grp"><button class="btn known" id="fcKnow" aria-pressed="false">I know this</button><button class="btn" id="fcShuffle">Shuffle</button></div>
+      </div>
+    </div>
+  </main>
+  <footer class="src">
+    <h2>Sources</h2>
+    <p>Checked on 16 October 2026, the day after the reveal. Tesla’s own Roadster page lists very few specs, so most figures come from reports of Tesla’s posts and the event. The drawing is an illustration.</p>
+    <ul>
+      <li><a href="https://electrek.co/2026/10/15/tesla-unveils-cyberfied-new-roadster-kickflip/" target="_blank" rel="noopener">Electrek: Tesla unveils new Roadster (trims, yoke, fixed seat, materials, reservations)</a></li>
+      <li><a href="https://thenextweb.com/news/tesla-roadster-reveal-thrusters-2028" target="_blank" rel="noopener">The Next Web: 10 thrusters, 600 litres of air, demo, 2028 production</a></li>
+      <li><a href="https://glitchwire.com/news/the-tesla-roadster-hovered-flipped-and-landed-the-air-tank-weighed-260-kilos/" target="_blank" rel="noopener">Glitchwire: demo details and what is unverified (onboard compressor, tank pressure)</a></li>
+      <li><a href="https://eletric-vehicles.com/tesla/tesla-granted-fan-downforce-patent-ahead-of-roadster-reveal-event/" target="_blank" rel="noopener">Tesla fan downforce patent report (rear diffuser fans; not confirmed for the Roadster)</a></li>
+      <li><a href="https://en.wikipedia.org/wiki/BT46" target="_blank" rel="noopener">Brabham BT46B fan car</a>, <a href="https://en.wikipedia.org/wiki/McMurtry_Sp%C3%A9irling" target="_blank" rel="noopener">McMurtry Spéirling</a>, <a href="https://aiaa.org/vehicle-guide/vehicles/falcon/vehicle-design" target="_blank" rel="noopener">Falcon 9 nitrogen thrusters (AIAA)</a></li>
+    </ul>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var $=function(s,r){return (r||document).querySelector(s)};
+  var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+  var svg=$('#car'), tour=$('#tour'), card=$('#card');
+
+  var ACCENT={0:'#26201a',1:'#3f5b78',2:'#4f6a2c',3:'#b8321f',4:'#96570a',5:'#0e6f75',6:'#26201a'};
+  var VERS={
+    road:{name:"Performance",desc:"Two seats, active aero and suction fans. No thrusters.",accel:"Under 1.6 s",seats:"2",legal:"Not stated",dot:"na",dep:"$50,000"},
+    track:{name:"Thrust",desc:"Adds thrusters at the rear. Limited release.",accel:"Under 0.9 s",seats:"2",legal:"Not stated",dot:"na",dep:"$250,000"},
+    hover:{name:"Rocket",desc:"One seat, thrusters around the car. Invite only.",accel:"Under 0.59 s",seats:"1",legal:"Not approved",dot:"bad",dep:"Invite only"}
+  };
+
+  /* tags: t = Tesla said it (as reported by Electrek / The Next Web), m = reported or older statement, n = Tesla has not said */
+  var PAGES=[
+    {layer:0,eyebrow:"Start here · 7 pages",title:"Meet the Roadster",
+     lead:"Tesla showed its new Roadster on 15 October 2026. It is an electric two-seater that adds two ideas from racing and rockets: suction fans and air thrusters. Tap a number on the car, or press Next to visit each system.",
+     facts:[["Revealed","15 Oct 2026, Texas","t"],["Production","2028, says Musk","t"],["Price","Not announced","n"]],
+     partsHead:"Tap an idea to light it up",
+     parts:[
+      {id:"i5",name:"Suction fans",text:"Fans pull air out from under the car, so the air above pushes it harder onto the road.",sel:".sys[data-sys=\"5\"]"},
+      {id:"i3",name:"Thrusters",text:"Compressed air shoots out of nozzles and pushes the car the other way. Thrust and Rocket versions only.",sel:".sys[data-sys=\"3\"]"},
+      {id:"i4",name:"Electric power",text:"A battery feeds electric motors. Tesla quotes over 300 miles of range.",sel:".sys[data-sys=\"4\"]"}],
+     noDefault:true,
+     backTitle:"How to read this guide",
+     howHead:"The three tags",
+     how:["TESLA: Tesla said it, as reported by Electrek and The Next Web. Tesla’s own Roadster page lists very few specs.","REPORTED: from media reports or older statements. Not confirmed for this car.","NOT STATED: Tesla has not said. We leave it blank instead of guessing."],
+     ex:{head:"About the drawing",text:"Tesla has not published a cutaway. The car is our illustration and the position of each part is an estimate. The explanations are general physics plus real examples, and each is labelled."},
+     said:["Reveal at a SpaceX test site in McGregor, Texas, on 15 October 2026","Musk says production starts in 2028"],
+     not:["Final price","Weight and battery size"]},
+
+    {layer:1,eyebrow:"System 1 of 5 · Body",title:"The body",
+     lead:"The body uses carbon fibre, titanium and magnesium. These are strong and light, and less weight means quicker acceleration and braking. Tesla also lists hidden headlights, a full-length tail light and flat, flush aero parts.",
+     facts:[["Materials","Carbon fibre, titanium, magnesium","t"],["Paint","“Ano White”","t"],["Windows","Tinted like a spacesuit visor","t"],["Active wings","Moved by Optimus actuators","t"]],
+     partsHead:"Tap a part",
+     parts:[
+      {id:"paint",name:"White paint",text:"Tesla says the paint borrows from coatings used to protect rockets. It has not said exactly what the coating does.",sel:"[data-part=\"paint\"]"},
+      {id:"glass",name:"Visor glass",text:"Tesla says the tinted windows mimic a spacesuit visor. It has not said what is in the glass.",sel:"[data-part=\"glass\"]"},
+      {id:"flap",name:"Active wing",text:"In Track Mode the car lowers itself and deploys wings moved by actuators Tesla developed for its Optimus robot.",sel:"[data-part=\"flap\"]"}],
+     backTitle:"Why it works",
+     howHead:"How it works",
+     how:["Magnesium is about a third lighter than aluminium. Carbon fibre is very strong for its weight. Titanium is strong and does not rust. Mixing them keeps the car light without making it weak.","A wing is an upside-down aeroplane wing. Air flowing over it pushes the car down instead of lifting it. That presses the tyres harder on the road, so they grip more. The push grows with speed squared: twice the speed gives four times the push."],
+     ex:{head:"Seen before",text:"The Bugatti Veyron’s rear wing rises at speed and tilts up to act as an air brake. White surfaces also reflect more sunlight than dark ones, which is one reason spacecraft and rockets are often white."},
+     said:["Materials, paint name, visor-style windows","Active wings in Track Mode; Tesla claims downforce “approaching F1 levels”"],
+     not:["What the paint or glass is made of","Wing size or downforce in numbers"]},
+
+    {layer:2,eyebrow:"System 2 of 5 · Cabin",title:"The cockpit",
+     lead:"Two seats, or one in the Rocket. The seat position is fixed and the controls are manual, both to save weight. You steer with a yoke, not a round wheel.",
+     facts:[["Seats","2 (Rocket: 1)","t"],["Seat position","Fixed","t"],["Steering","Yoke, steer-by-wire","t"],["Screens","Centre screen + 2 small ones","t"]],
+     partsHead:"Tap a part",
+     parts:[
+      {id:"seat",name:"Fixed seat",text:"A sliding seat needs motors and rails, which add weight. Tesla has not said how drivers adjust to fit. Racing cars with fixed seats usually adjust the pedals instead.",sel:"[data-part=\"seat\"]"},
+      {id:"yoke",name:"Yoke",text:"A yoke is a steering handle like an aircraft control, not a full round wheel. Tesla has used one in the Model S and Model X since 2021.",sel:"[data-part=\"yoke\"]"},
+      {id:"wire",name:"Steer-by-wire",text:"There is no steel shaft between the yoke and the wheels. Sensors read your hands and motors turn the wheels.",sel:"[data-part=\"yoke\"]"}],
+     backTitle:"Why it works",
+     howHead:"How it works",
+     how:["Steer-by-wire: a sensor measures how far you turn the yoke. A computer decides how much the wheels should turn and tells electric motors to do it.","Because software sits in the middle, the car can change how sharp the steering feels. It can be light and quick when parking and calmer at high speed."],
+     ex:{head:"Seen before",text:"The Tesla Cybertruck already uses steer-by-wire. Formula 1 seats are moulded to each driver and fixed in place, so the pedals and steering are set to match."},
+     said:["Fixed seat position and manual controls to save weight","Yoke with steer-by-wire; centre screen and two driver displays"],
+     not:["How the pedals or yoke adjust","Seat weight or materials"]},
+
+    {layer:3,eyebrow:"System 3 of 5 · Thrusters",title:"The thrusters",
+     lead:"Thrust and Rocket have cold-gas thrusters. Air is squeezed into tanks. When a valve opens, the air rushes out of a nozzle and pushes the car the other way. Nothing is burned.",
+     facts:[["Thrust version","Thrusters at the rear","t"],["Rocket version","Thrusters around the car","t"],["Demo car","10 thrusters, 600 L of air","t"],["Push","4 to 5× what tyres can hold","t"],["Tank pressure","Not stated (Musk: ~10,000 psi in 2018)","n"]],
+     partsHead:"Tap a part",
+     parts:[
+      {id:"tanks",name:"Air tanks",text:"Tesla says carbon-fibre-wrapped tanks fill spare space in the car, and more gas means more “flight time”. The tanks can be refilled.",sel:"[data-part=\"tanks\"]"},
+      {id:"nozzles",name:"Nozzles",text:"The air leaves one way and the push goes the other. Rear nozzles push the car forward. In the demo, thrusters launched the car off a ramp, flipped it and landed it.",sel:"[data-part=\"nozzles\"]"},
+      {id:"compressor",name:"Air pump",text:"Reports say an onboard compressor refills the tanks. Tesla has not given details.",sel:"[data-part=\"compressor\"]"}],
+     fire:true,
+     backTitle:"Why it works",
+     howHead:"How it works",
+     how:["Newton’s third law: for every push there is an equal push the opposite way. Throw air backwards and the car goes forwards. The push is the mass of air leaving each second times its speed. Higher pressure means faster air and a bigger push.","Gas also cools when it expands quickly. A spray can feels cold for the same reason. There is no flame, so there is no heat from burning."],
+     ex:{head:"Seen before",text:"SpaceX’s Falcon 9 rocket uses nitrogen cold-gas thrusters to point itself while coasting in space. Scuba tanks store air at about 200 to 300 bar. 10,000 psi would be about 690 bar."},
+     said:["10 thrusters linked to 600 litres of compressed air on the demo car","Thrusters give 4 to 5 times the force tyres can handle (Tesla’s claim)"],
+     not:["Tank pressure and weight","How much push, and for how long"]},
+
+    {layer:4,eyebrow:"System 4 of 5 · Power",title:"Battery and motors",
+     lead:"An electric car stores energy in a battery and uses it to spin motors that turn the wheels. Tesla quotes over 300 miles of range and a top speed over 230 mph for the Rocket.",
+     facts:[["Range","Over 300 miles","t"],["Top speed","Over 230 mph (Rocket)","t"],["Battery size","Not stated","n"],["Motors","Not stated (2017 plan: three)","n"]],
+     partsHead:"Tap a part",
+     parts:[
+      {id:"battery",name:"Battery",text:"Tesla’s other cars keep the lithium-ion battery flat in the floor, which keeps the weight low. Tesla has not shown the Roadster’s pack.",sel:"[data-part=\"battery\"]"},
+      {id:"motors",name:"Motors",text:"A motor uses magnets to turn electricity into spin. It gives its full turning force from a standstill, which is why electric cars launch so hard.",sel:"[data-part=\"motors\"]"},
+      {id:"wheels",name:"Tyres",text:"Power is useless if the tyres slip. Grip is the limit, which is why the Roadster adds fans and thrusters.",sel:"[data-part=\"wheels\"]"}],
+     backTitle:"Why it works",
+     howHead:"How it works",
+     how:["Battery energy is measured in kilowatt-hours (kWh). Range depends on how big the battery is and how little energy the car wastes. Power, in kilowatts, is how fast the energy is used.","A tyre can only pass on as much push as its grip allows. Grip depends on how hard the tyre is pressed into the road. Fans press the car down. Thrusters push without using the tyres at all."],
+     ex:{head:"Seen before",text:"Tesla’s Model S Plaid is rated at about 2 seconds for 0 to 60 mph with no thrusters. That shows what electric motors already do before the Roadster adds extras."},
+     said:["Range over 300 miles; 0 to 60 mph under 1.6 s, 0.9 s and 0.59 s by version","Rocket top speed over 230 mph"],
+     not:["Battery size, motor count, power and weight","A recorded 0.81 s test was shown but has not been independently verified"]},
+
+    {layer:5,eyebrow:"System 5 of 5 · Floor",title:"The suction fans",
+     lead:"Tesla calls it a “multi-mode suction system”. Fans pull air from under the car, so the air above pushes the car onto the road. In the demo, the car stayed stuck to a ramp while upside down.",
+     facts:[["System","Multi-mode suction","t"],["Upside-down hold","Yes, even when still","t"],["Track Mode","Car lowers itself","t"],["Downforce","“Approaching F1 levels”","t"],["Fan count and position","Not stated","n"]],
+     partsHead:"Tap a part",
+     parts:[
+      {id:"fans",name:"Fans",text:"Electric fans pull air out from under the car. A Tesla patent granted in September 2026 shows four fans in the rear diffuser, but it does not name the Roadster.",sel:"[data-part=\"fans\"]"},
+      {id:"skirts",name:"Skirts",text:"Older fan cars sealed the floor with skirts because leaks weaken the suction. A separate 2025 Tesla patent describes skirts that deploy. Tesla has not said if the Roadster has them.",sel:"[data-part=\"skirts\"]"},
+      {id:"down",name:"Air pushing down",text:"Air presses on everything. The fans lower the pressure under the car, and the difference between top and bottom becomes downforce.",sel:".fx[data-fx=\"5\"]"}],
+     backTitle:"Why it works",
+     howHead:"How it works",
+     how:["Air pressure is a force on every square metre. At sea level it is about 101,000 N per square metre, close to 10 tonnes. Force equals pressure times area.","Example sum, not Tesla’s numbers: if fans cut the pressure under a car by 10% (about 10 kPa) across a 3 m² floor, the push is 10,000 × 3 = 30,000 N, about 3 tonnes. More downforce means more grip, and fans work even at 0 mph. Wings need speed."],
+     ex:{head:"Seen before",text:"Brabham BT46B (1978): one big rear fan and sliding skirts. Niki Lauda won the Swedish Grand Prix in it, then fan cars were banned. McMurtry Spéirling: twin fans, about 2,000 kg of downforce at standstill (the maker’s figure), and the Goodwood hill-climb record in 2022."},
+     said:["Fans can hold the car upside down, even when stationary","Track Mode lowers the car; Tesla claims downforce “approaching F1 levels”"],
+     not:["How many fans, where they sit, how much power they use","Downforce in kg or newtons"]},
+
+    {layer:0,kind:"versions",eyebrow:"Choose · Performance, Thrust or Rocket",title:"Three versions",
+     lead:"Pick one to change the car and the numbers. Each step up adds more rocket tech. Tesla has not announced prices. The amounts below are reservation amounts.",
+     backTitle:"What is different",
+     howHead:"Reservations",
+     how:["Performance: $5,000 now and $45,000 within 10 days, $50,000 in total. Tesla calls it fully refundable.","Thrust: reported at a $250,000 reservation. Rocket: invite only. Tesla says Rocket is not approved for public roads and has not said which versions are road legal.","Musk says production starts in 2028. In 2017 Tesla promised 620 miles of range and four seats. The new car is quoted at over 300 miles and two seats or fewer."],
+     ex:null,
+     said:["0 to 60 mph: under 1.6 s, under 0.9 s and under 0.59 s","Seats: 2, 2 and 1"],
+     not:["Price","Which versions can be registered for the road"]}
+  ];
+
+  var CARDS=[
+    [5,"Why can fans hold a car on the road?","Fans lower the air pressure under the car. The air above pushes down harder than the thinner air below pushes up. The difference presses the car onto the road, even when it is standing still."],
+    [3,"Does the Roadster burn fuel in its thrusters?","No. Cold-gas thrusters push out compressed air. Nothing burns. SpaceX’s Falcon 9 uses the same idea with nitrogen to point itself in space."],
+    [3,"How does a thruster push a car?","Newton’s third law. Air goes out one way and the car is pushed the other way. More pressure means faster air and a bigger push."],
+    [3,"How many thrusters did the demo car have?","Ten, linked to 600 litres of compressed air, according to Tesla’s Lars Moravy."],
+    [3,"Has Tesla said the tank pressure?","No. Musk mentioned about 10,000 psi (690 bar) in 2018, but Tesla has not confirmed it for this car. A scuba tank is about 200 to 300 bar."],
+    [2,"What replaces the round steering wheel?","A yoke with steer-by-wire. Sensors read your hands and motors turn the wheels, with no steel shaft in between. The Cybertruck already works this way."],
+    [2,"Why is the seat fixed?","A sliding seat needs motors and rails. Tesla says the fixed seat position and manual controls save weight."],
+    [1,"What is the body made of?","Carbon fibre, titanium and magnesium, says Tesla. All three are strong for their weight."],
+    [1,"Who made the active wing motors?","Tesla says it developed those actuators for its Optimus robot, and the Roadster uses them to move the active wings in Track Mode."],
+    [4,"What range does Tesla quote?","Over 300 miles. In 2017 Tesla promised 620 miles."],
+    [3,"Which version is single-seat and invite-only?","Rocket. One seat, under 0.59 s from 0 to 60 mph, top speed over 230 mph, and Tesla says it is not approved for public roads."],
+    [5,"Which old race car used a fan to stick to the track?","The Brabham BT46B in 1978. Niki Lauda won the Swedish Grand Prix in it, and fan cars were banned afterwards."],
+    [0,"When does production start, and what does it cost?","Musk says production starts in 2028. Tesla has not announced a price."]
+  ];
+
+var page=0, ver='track', flipped=false, partId=null, fireT=null;
+
+  var TAGS_LBL={t:'Tesla',m:'Reported',n:'Not stated'};
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+  function clearHl(){$$('.hl',svg).forEach(function(e){e.classList.remove('hl')})}
+  function selectPart(id){
+    var p=PAGES[page]; partId=id; clearHl();
+    var part=null;
+    if(p.parts){p.parts.forEach(function(x){if(x.id===id)part=x})}
+    if(part){$$(part.sel,svg).forEach(function(e){e.classList.add('hl')})}
+    $$('.chip',card).forEach(function(c){c.setAttribute('aria-pressed',c.dataset.id===id?'true':'false')});
+    var t=$('#partText',card);
+    if(t){t.textContent=part?part.text:(p.noDefault?'Pick one of the three ideas above.':'')}
+  }
+
+  function frontHtml(p){
+    var h='<p class="eyebrow">'+esc(p.eyebrow)+'</p><h2>'+esc(p.title)+'</h2><p class="lead">'+esc(p.lead)+'</p>';
+    if(p.layer===3&&ver==='road'){h+='<p class="note">The Road version has no air jets. Choose Track or Hover above the car to see them.</p>'}
+    if(p.kind==='versions'){
+      h+='<div class="vers">';
+      ['road','track','hover'].forEach(function(k){var v=VERS[k];
+        h+='<button class="ver" data-v="'+k+'" aria-pressed="'+(ver===k)+'"><b>'+v.name+'</b><span class="d">'+esc(v.desc)+'</span><span class="r">'+esc(v.accel)+' · '+v.seats+(v.seats==='1'?' seat':' seats')+' · '+esc(v.dep)+'</span></button>'});
+      h+='</div>';
+    } else {
+      h+='<dl class="facts">'+p.facts.map(function(f){return '<div><dt>'+esc(f[0])+(TAGS_LBL[f[2]]?'<em class="tg tg-'+f[2]+'">'+TAGS_LBL[f[2]]+'</em>':'')+'</dt><dd>'+esc(f[1])+'</dd></div>'}).join('')+'</dl>';
+      h+='<div class="parts-h">'+esc(p.partsHead)+'</div><div class="chips">'+p.parts.map(function(x){return '<button class="chip" data-id="'+x.id+'" aria-pressed="false">'+esc(x.name)+'</button>'}).join('')+'</div><p class="part-text" id="partText" aria-live="polite"></p>';
+    }
+    h+='<div class="face-actions"><button class="btn solid" data-flip>Flip for the science</button></div>';
+    return h;
+  }
+  function backHtml(p){
+    var h='<p class="eyebrow">'+esc(p.eyebrow)+'</p><h3>'+esc(p.backTitle)+'</h3>';
+    h+='<section class="blk"><h4>'+esc(p.howHead)+'</h4>'+p.how.map(function(t){return '<p>'+esc(t)+'</p>'}).join('')+'</section>';
+    if(p.ex){h+='<section class="blk"><h4>'+esc(p.ex.head)+'</h4><p>'+esc(p.ex.text)+'</p></section>'}
+    if(p.said||p.not){h+='<section class="blk"><h4>What is confirmed</h4><ul>'+(p.said||[]).map(function(t){return '<li class="ok"><b>Tesla said:</b> '+esc(t)+'</li>'}).join('')+(p.not||[]).map(function(t){return '<li class="no"><b>Not stated:</b> '+esc(t)+'</li>'}).join('')+'</ul></section>'}
+    h+='<div class="face-actions"><button class="btn solid" data-flip>Flip back</button></div>';
+    return h;
+  }
+  function renderCard(){
+    var p=PAGES[page];
+    card.innerHTML='<div class="card-inner"><div class="face front" id="front">'+frontHtml(p)+'</div><div class="face back" id="back">'+backHtml(p)+'</div></div>';
+    card.classList.toggle('flipped',flipped);
+    $('#front').inert=flipped; $('#back').inert=!flipped;
+    var first=(p.parts&&!p.noDefault)?p.parts[0].id:null;
+    if(p.parts){selectPart(partId&&p.parts.some(function(x){return x.id===partId})?partId:first)}
+  }
+
+  function renderStage(){
+    var p=PAGES[page], layer=p.layer;
+    svg.setAttribute('class','v-'+ver+(svg.classList.contains('firing')?' firing':''));
+    $$('.sys',svg).forEach(function(g){var n=+g.dataset.sys;g.classList.toggle('dim',layer>0&&n!==layer);g.classList.toggle('on',layer>0&&n===layer)});
+    $$('.fx',svg).forEach(function(e){e.classList.toggle('show',+e.dataset.fx===layer)});
+    $$('.pin',svg).forEach(function(pn){var n=+pn.dataset.go;pn.classList.toggle('active',n===layer);pn.classList.toggle('off',n===3&&ver==='road')});
+    tour.style.setProperty('--accent',ACCENT[page]);
+    $$('.seg button').forEach(function(b){b.setAttribute('aria-checked',b.dataset.v===ver?'true':'false')});
+    var v=VERS[ver];
+    $('#st-accel').textContent=v.accel;$('#st-seats').textContent=v.seats;$('#st-legal').textContent=v.legal;$('#st-dep').textContent=v.dep;
+    $('#st-dot').style.background={ok:'var(--ok)',warn:'var(--warn)',bad:'var(--bad)',na:'var(--ink-2)'}[v.dot];
+    var fb=$('#fireBtn'); fb.hidden=layer!==3; fb.disabled=ver==='road';
+  }
+  function renderNav(){
+    $('#dots').innerHTML=PAGES.map(function(p,i){return '<li><button data-p="'+i+'" aria-label="Page '+(i+1)+': '+esc(p.title)+'"'+(i===page?' aria-current="step"':'')+'></button></li>'}).join('');
+    $('#pg').textContent='Page '+(page+1)+' of '+PAGES.length;
+    $('#prev').disabled=page===0; $('#next').disabled=page===PAGES.length-1;
+  }
+  function fire(ms){
+    if(ver==='road')return;
+    svg.classList.add('firing'); clearTimeout(fireT);
+    fireT=setTimeout(function(){svg.classList.remove('firing')},ms||2800);
+  }
+  function go(n){
+    n=Math.max(0,Math.min(PAGES.length-1,n));
+    page=n; flipped=false; partId=null; clearHl();
+    renderCard(); renderStage(); renderNav();
+    if(PAGES[page].layer===3){fire(2200)} else {svg.classList.remove('firing')}
+  }
+  function setVer(v){
+    ver=v; renderStage();
+    var scroll=card.scrollTop; renderCard(); card.scrollTop=scroll;
+    if(PAGES[page].layer===3){fire(2200)}
+  }
+  function flip(){
+    flipped=!flipped; card.classList.toggle('flipped',flipped);
+    $('#front').inert=flipped; $('#back').inert=!flipped;
+    setTimeout(function(){var b=$((flipped?'#back':'#front')+' [data-flip]');if(b)b.focus({preventScroll:true})},620);
+  }
+
+  card.addEventListener('click',function(e){
+    var t=e.target.closest('button'); if(!t)return;
+    if(t.hasAttribute('data-flip')){flip();return}
+    if(t.classList.contains('chip')){selectPart(t.dataset.id);return}
+    if(t.classList.contains('ver')){setVer(t.dataset.v);return}
+  });
+  $('#prev').addEventListener('click',function(){go(page-1)});
+  $('#next').addEventListener('click',function(){go(page+1)});
+  $('#dots').addEventListener('click',function(e){var b=e.target.closest('button');if(b)go(+b.dataset.p)});
+  $$('.seg button').forEach(function(b){b.addEventListener('click',function(){setVer(b.dataset.v)})});
+  $('#fireBtn').addEventListener('click',function(){fire(2800)});
+  $$('.pin',svg).forEach(function(pn){
+    pn.addEventListener('click',function(){go(+pn.dataset.go)});
+    pn.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();go(+pn.dataset.go)}});
+  });
+  document.addEventListener('keydown',function(e){
+    if(tour.hidden)return;
+    var tag=(e.target&&e.target.tagName)||'';
+    if(/INPUT|TEXTAREA|SELECT/.test(tag))return;
+    if(e.key==='ArrowRight')go(page+1);
+    if(e.key==='ArrowLeft')go(page-1);
+  });
+
+  /* tabs */
+  function showTab(which){
+    ['tour','sim','cards'].forEach(function(k){var on=k===which;$('#'+k).hidden=!on;$('#tab-'+k).setAttribute('aria-selected',on?'true':'false')});
+    if(window.RoadsterSim){if(which==='sim')window.RoadsterSim.start();else window.RoadsterSim.stop()}
+  }
+  $('#tab-tour').addEventListener('click',function(){showTab('tour')});
+  $('#tab-sim').addEventListener('click',function(){showTab('sim')});
+  $('#tab-cards').addEventListener('click',function(){showTab('cards')});
+
+  /* flashcards */
+  var order=CARDS.map(function(_,i){return i}), fi=0, fFlip=false, known={};
+  var fc=$('#fc');
+  var TAGS=['Overview','The body','The cockpit','The thrusters','Battery and motors','The suction fans'];
+  function renderFc(){
+    var c=CARDS[order[fi]], acc=ACCENT[c[0]];
+    fc.style.setProperty('--accent',acc);
+    fc.innerHTML='<div class="card-inner"><div class="face"><p class="eyebrow">'+TAGS[c[0]]+'</p><p class="q">'+esc(c[1])+'</p><p class="hint">Press to flip</p></div><div class="face back"><p class="eyebrow">Answer</p><p class="a">'+esc(c[2])+'</p><p class="hint">Press to flip back</p></div></div>';
+    fc.classList.toggle('flipped',fFlip);
+    $('#fcCount').textContent='Card '+(fi+1)+' of '+CARDS.length;
+    var n=Object.keys(known).length; $('#fcKnown').textContent='Known '+n+' of '+CARDS.length;
+    var k=$('#fcKnow'); var isK=!!known[order[fi]];
+    k.setAttribute('aria-pressed',isK); k.textContent=isK?'Marked as known':'I know this';
+    $('#fcPrev').disabled=fi===0; $('#fcNext').disabled=fi===CARDS.length-1;
+  }
+  fc.addEventListener('click',function(){fFlip=!fFlip;fc.classList.toggle('flipped',fFlip)});
+  $('#fcPrev').addEventListener('click',function(){fi=Math.max(0,fi-1);fFlip=false;renderFc()});
+  $('#fcNext').addEventListener('click',function(){fi=Math.min(CARDS.length-1,fi+1);fFlip=false;renderFc()});
+  $('#fcKnow').addEventListener('click',function(){var id=order[fi];if(known[id])delete known[id];else known[id]=1;renderFc()});
+  $('#fcShuffle').addEventListener('click',function(){
+    for(var i=order.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=order[i];order[i]=order[j];order[j]=t}
+    fi=0;fFlip=false;renderFc();
+  });
+
+  /* exploded view */
+  var exv=0, exRaf=null, exSl=$('#ex'), exBtn=$('#exBtn');
+  var EXDY={1:-85,2:-42,3:0,4:38,5:80}, EXDX={3:-45};
+  $$('.pin',svg).forEach(function(pn){var m=/translate\(([\d.]+)\s+([\d.]+)\)/.exec(pn.getAttribute('transform'));pn.dataset.x=m[1];pn.dataset.y=m[2]});
+  function setEx(v){
+    exv=v; svg.style.setProperty('--ex',v);
+    svg.setAttribute('viewBox','30 '+(54-34*v)+' 890 '+(280+86*v));
+    $$('.pin',svg).forEach(function(pn){var n=+pn.dataset.go;pn.setAttribute('transform','translate('+(+pn.dataset.x+(EXDX[n]||0)*v)+' '+(+pn.dataset.y+EXDY[n]*v)+')')});
+    exSl.value=Math.round(v*100);
+    exBtn.textContent=v>0.5?'Put together':'Pull apart';
+  }
+  function tweenEx(to){
+    cancelAnimationFrame(exRaf);
+    var from=exv, t0=null, dur=700;
+    if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches){setEx(to);return}
+    function step(t){if(t0===null)t0=t;var k=Math.min(1,(t-t0)/dur);k=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;setEx(from+(to-from)*k);if(k<1)exRaf=requestAnimationFrame(step)}
+    exRaf=requestAnimationFrame(step);
+  }
+  exSl.addEventListener('input',function(){cancelAnimationFrame(exRaf);setEx(exSl.value/100)});
+  exBtn.addEventListener('click',function(){tweenEx(exv>0.5?0:1)});
+
+  go(0); renderFc();
+})();
+</script>
+<script>
+(function(){
+  var $=function(s){return document.querySelector(s)};
+  var cv=$('#simCv'); if(!cv) return;
+  var ctx=cv.getContext('2d');
+  var W=960,H=540,dpr=1;
+  var G=9.81, R=22, TH_END=120*Math.PI/180, MU=1.1, A_MOT=16.8, CGH=0.42, RUNUP=22, TWO=Math.PI*2;
+  var P={fan:1.0,vT:12,thr:true,slow:false};
+  var S=null, raf=null, last=0, acc=0, uiT=0;
+  var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var BODY=new Path2D('M118 270L118 238C118 220 132 208 156 202L310 172C350 146 405 126 475 124C535 123 580 140 622 160L735 184C800 194 850 210 872 238C880 250 880 262 874 270Z');
+  var CANOPY=new Path2D('M330 176C372 148 424 134 476 133C524 133 562 148 598 166L560 178Z');
+  var SC=4.2/756;
+  var stars=[]; for(var i=0;i<70;i++){stars.push([Math.random()*W,Math.random()*H*0.7,Math.random()*1.4+.3])}
+  var lines=[]; for(var j=0;j<30;j++){lines.push([Math.random()*W,Math.random()*H,Math.random()])}
+
+  function reset(){
+    S={mode:'idle',t:0,x:-RUNUP,y:CGH,vx:0,vy:0,v:0,th:0,phi:0,om:0,wang:0,slip:false,
+       phase:0,trail:[],trT:0,parts:[],shake:0,fire:0,flash:null,flashT:0,
+       cam:{x:-2,y:13,z:9},res:null,why:'',err:0,ng:0,need:0,have:0,
+       flightT:0,tLand:0,omNeeded:0,restPhi:0,landed:false,maxH:0};
+    uiT=1; pushUI();
+  }
+  function fl(msg){S.flash=msg;S.flashT=1.6}
+
+  function placeArc(){
+    var s=Math.sin(S.th),c=Math.cos(S.th);
+    S.x=R*s+(-s)*CGH; S.y=R*(1-c)+c*CGH; S.phi=S.th;
+  }
+  function startFly(why){
+    S.mode='fly'; S.why=why; S.vx=S.v*Math.cos(S.th); S.vy=S.v*Math.sin(S.th); S.om=S.v/R; S.phi=S.th;
+    var disc=S.vy*S.vy+2*G*(S.y-CGH); var t=(S.vy+Math.sqrt(Math.max(0,disc)))/G;
+    S.tLand=t; S.flightT=0;
+    var tot=S.phi+S.om*t; var target=TWO*Math.round(tot/TWO);
+    S.omNeeded=(target-S.phi)/t;
+    fl(why==='peel'?'LOST CONTACT':'AIRBORNE');
+  }
+  function land(){
+    var err=S.phi-TWO*Math.round(S.phi/TWO);
+    S.err=err*180/Math.PI; var a=Math.abs(S.err);
+    S.impact=Math.abs(S.vy); S.y=CGH; S.vy=0; S.mode='landed'; S.landed=true;
+    S.shake=Math.min(1,S.impact/18);
+    if(a<=20){S.res='clean';S.restPhi=TWO*Math.round(S.phi/TWO);fl('WHEELS DOWN')}
+    else if(a<=60){S.res='hard';S.restPhi=TWO*Math.round(S.phi/TWO);fl('HARD LANDING')}
+    else {S.res='crash';S.restPhi=Math.PI*(2*Math.round((S.phi-Math.PI)/TWO)+1);fl('WRONG WAY UP')}
+    for(var i=0;i<26;i++){spawn('spark',S.x+(Math.random()-.5)*3,0.1,(Math.random()-.5)*10+S.vx*.4,Math.random()*7,.12,.6)}
+  }
+  function spawn(type,x,y,vx,vy,r,life){ if(S.parts.length>320)S.parts.shift(); S.parts.push({type:type,x:x,y:y,vx:vx,vy:vy,r:r,life:life,max:life}) }
+
+  function step(dt){
+    S.t+=dt; var m=S.mode;
+    if(m==='run'){
+      var lim=Math.min(A_MOT,MU*(1+P.fan)*G);
+      S.have=MU*(1+P.fan); S.need=A_MOT/G;
+      if(S.v<P.vT){S.v=Math.min(P.vT,S.v+lim*dt)}
+      S.slip=(MU*(1+P.fan)*G<A_MOT)&&S.v<P.vT;
+      S.x+=S.v*dt; S.wang+=S.v*dt/0.28; S.y=CGH; S.phi=0; S.ng=1+P.fan;
+      if(S.slip&&Math.random()<.5){spawn('smoke',S.x-1.4,0.2,-2-Math.random()*2,Math.random()*1.2,.3,.7)}
+      if(S.x>=0){S.x=0;S.mode='arc';S.th=0}
+    } else if(m==='arc'){
+      var c=Math.cos(S.th),s=Math.sin(S.th);
+      var ng=S.v*S.v/(G*R)+c+P.fan; S.ng=ng;
+      if(ng<0){startFly('peel');return}
+      var lim2=Math.min(A_MOT,MU*ng*G);
+      var want=G*s+4*(P.vT-S.v);
+      var drive=Math.max(-MU*ng*G,Math.min(lim2,want));
+      S.slip=want>lim2+0.05;
+      S.need=Math.max(0,s); S.have=MU*ng;
+      S.v+=(drive-G*s)*dt; S.th+=S.v/R*dt; S.wang+=S.v*dt/0.28;
+      if(S.slip&&Math.random()<.4){spawn('smoke',S.x,S.y,0,0,.25,.5)}
+      if(S.th>=TH_END){S.th=TH_END;placeArc();startFly('lip');return}
+      if(S.th<=0){S.th=0;S.mode='roll';S.x=0;S.y=CGH;S.phi=0;S.res='slipped';fl('SLIPPED')}
+      else placeArc();
+    } else if(m==='roll'){
+      S.v+=(S.v<0?3:-3)*dt*(Math.abs(S.v)>0.05?1:0); S.x+=S.v*dt; S.wang+=S.v*dt/0.28;
+      if(Math.abs(S.v)<0.06){S.mode='done'}
+    } else if(m==='fly'){
+      S.vy-=G*dt; S.x+=S.vx*dt; S.y+=S.vy*dt; S.flightT+=dt;
+      S.fire=0;
+      if(P.thr){
+        var d=S.omNeeded-S.om;
+        if(Math.abs(d)>0.004){
+          var stp=Math.sign(d)*Math.min(Math.abs(d),3.0*dt); S.om+=stp; S.fire=Math.sign(d);
+          var fx=Math.cos(S.phi),fy=Math.sin(S.phi),nx=-fy,ny=fx; var side=S.fire>0?1:-1;
+          var px=S.x+fx*2.1*side,py=S.y+fy*2.1*side;
+          for(var k=0;k<2;k++){spawn('puff',px,py,S.vx-nx*10+(Math.random()-.5)*2,S.vy-ny*10+(Math.random()-.5)*2,.18,.9)}
+        }
+      }
+      S.phi+=S.om*dt;
+      if(S.flightT>0.12&&S.x>0.05&&Math.hypot(S.x,S.y-R)>=R-CGH){
+        var thc=Math.atan2(S.x,R-S.y);
+        if(thc>0&&thc<=TH_END){S.th=thc;S.v=0;placeArc();S.mode='done';S.res='ramp';S.err=0;S.shake=.7;fl('BACK ON THE RAMP');
+          for(var w=0;w<20;w++){spawn('spark',S.x,S.y,(Math.random()-.5)*8,Math.random()*6,.12,.6)}
+          return}
+      }
+      if(S.y<=CGH&&S.vy<0){land()}
+    } else if(m==='landed'){
+      var df=S.restPhi-S.phi; S.phi+=df*Math.min(1,10*dt);
+      var dec=S.res==='crash'?6:9;
+      S.vx+=(S.vx<0?dec:-dec)*dt; if(Math.abs(S.vx)<.15)S.vx=0;
+      S.x+=S.vx*dt; S.wang+=S.vx*dt/0.28;
+      if(S.res!=='clean'&&Math.random()<.5)spawn('spark',S.x,0.1,Math.random()*4-2,Math.random()*3,.1,.4);
+      if(S.vx===0&&Math.abs(df)<.02){S.mode='done'}
+    }
+    S.trT+=dt; if(S.trT>0.03&&S.mode!=='idle'){S.trT=0;S.trail.push({x:S.x,y:S.y,m:S.mode});if(S.trail.length>170)S.trail.shift()}
+    if(S.y-CGH>S.maxH)S.maxH=S.y-CGH;
+    for(var q=S.parts.length-1;q>=0;q--){var p=S.parts[q];p.life-=dt;if(p.life<=0){S.parts.splice(q,1);continue}
+      p.x+=p.vx*dt;p.y+=p.vy*dt; if(p.type==='spark'){p.vy-=G*dt;if(p.y<0){p.y=0;p.vy*=-.3}} else {p.r+=dt*(p.type==='smoke'?.8:2.2)}}
+  }
+
+  /* ---------- drawing ---------- */
+  function toS(x,y){return [(x-S.cam.x)*S.cam.z+W/2,H/2-(y-S.cam.y)*S.cam.z]}
+  function drawScene(){
+    var z=S.cam.z;
+    var bg=ctx.createLinearGradient(0,0,0,H); bg.addColorStop(0,'#0b0a09'); bg.addColorStop(1,'#241d15'); ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle='#fff';
+    for(var i=0;i<stars.length;i++){var s=stars[i];ctx.globalAlpha=.25+s[2]*.3;ctx.fillRect((s[0]-S.cam.x*.4+W*10)%W,s[1],s[2],s[2])}
+    ctx.globalAlpha=1;
+    /* ground */
+    var g0=toS(0,0)[1];
+    var gg=ctx.createLinearGradient(0,g0,0,H); gg.addColorStop(0,'#3b332a'); gg.addColorStop(1,'#14110d');
+    ctx.fillStyle=gg; ctx.fillRect(0,g0,W,Math.max(0,H-g0));
+    ctx.strokeStyle='rgba(255,246,225,.55)'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(0,g0); ctx.lineTo(W,g0); ctx.stroke();
+    ctx.strokeStyle='rgba(255,246,225,.35)'; ctx.lineWidth=Math.max(1,z*.12);
+    for(var x=-120;x<12;x+=5){var a=toS(x,-1.2),b=toS(x+2.4,-1.2);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke()}
+    /* lamps */
+    [-34,-14].forEach(function(lx){var p=toS(lx,11),f=toS(lx,0);
+      ctx.strokeStyle='#4a4136';ctx.lineWidth=Math.max(1,z*.18);ctx.beginPath();ctx.moveTo(f[0],f[1]);ctx.lineTo(p[0],p[1]);ctx.stroke();
+      var gl=ctx.createRadialGradient(p[0],p[1],0,p[0],p[1],z*9);gl.addColorStop(0,'rgba(255,214,140,.55)');gl.addColorStop(1,'rgba(255,214,140,0)');ctx.fillStyle=gl;ctx.fillRect(p[0]-z*9,p[1]-z*9,z*18,z*18);
+      ctx.fillStyle='#ffe2a8';ctx.beginPath();ctx.arc(p[0],p[1],Math.max(2,z*.28),0,TWO);ctx.fill()});
+    /* ramp lattice */
+    ctx.strokeStyle='rgba(190,182,166,.45)'; ctx.lineWidth=Math.max(1,z*.09);
+    var N=24, d1=1.0, d2=4.8;
+    function rp(d,th){return toS(R*Math.sin(th)+d*Math.sin(th),R*(1-Math.cos(th))-d*Math.cos(th))}
+    ctx.beginPath();
+    for(var k=0;k<N;k++){var t0=TH_END*k/N,t1=TH_END*(k+1)/N,tm=(t0+t1)/2;
+      var a1=rp(d1,t0),b1=rp(d2,tm),c1=rp(d1,t1);
+      ctx.moveTo(a1[0],a1[1]);ctx.lineTo(b1[0],b1[1]);ctx.lineTo(c1[0],c1[1]);
+      var o0=rp(d2,t0);ctx.moveTo(a1[0],a1[1]);ctx.lineTo(o0[0],o0[1])}
+    ctx.stroke();
+    ctx.beginPath();for(var q=0;q<=40;q++){var tt=TH_END*q/40,o=rp(d2,tt);if(q===0)ctx.moveTo(o[0],o[1]);else ctx.lineTo(o[0],o[1])}ctx.stroke();
+    /* ramp surface */
+    ctx.lineCap='butt';
+    ctx.strokeStyle='#cfc9bb';ctx.lineWidth=z*1.0;ctx.beginPath();
+    for(var q2=0;q2<=60;q2++){var t2=TH_END*q2/60,o2=rp(0.5,t2);if(q2===0)ctx.moveTo(o2[0],o2[1]);else ctx.lineTo(o2[0],o2[1])}ctx.stroke();
+    ctx.strokeStyle='#fff6e2';ctx.lineWidth=Math.max(1,z*.1);ctx.beginPath();
+    for(var q3=0;q3<=60;q3++){var t3=TH_END*q3/60,o3=rp(0,t3);if(q3===0)ctx.moveTo(o3[0],o3[1]);else ctx.lineTo(o3[0],o3[1])}ctx.stroke();
+    ctx.strokeStyle='#e0412a';ctx.shadowColor='#e0412a';ctx.shadowBlur=8;ctx.lineWidth=Math.max(1.5,z*.14);ctx.beginPath();
+    for(var q4=0;q4<=60;q4++){var t4=TH_END*q4/60,o4=rp(1.05,t4);if(q4===0)ctx.moveTo(o4[0],o4[1]);else ctx.lineTo(o4[0],o4[1])}ctx.stroke();
+    ctx.shadowBlur=0;
+  }
+  function drawTrail(){
+    var tr=S.trail; if(tr.length<2)return;
+    for(var i=1;i<tr.length;i++){
+      var a=toS(tr[i-1].x,tr[i-1].y),b=toS(tr[i].x,tr[i].y),al=i/tr.length;
+      ctx.strokeStyle=tr[i].m==='fly'?'rgba(255,110,80,'+al*.75+')':tr[i].m==='run'?'rgba(70,210,215,'+al*.6+')':'rgba(255,190,90,'+al*.7+')';
+      ctx.lineWidth=2+al*4;ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.stroke()}
+  }
+  function drawCar(){
+    var p=toS(S.x,S.y),k=SC*S.cam.z;
+    ctx.save();ctx.translate(p[0],p[1]);ctx.rotate(-S.phi);ctx.scale(k,k);ctx.translate(-496,-225);
+    if(P.fan>0){var g=ctx.createLinearGradient(0,270,0,340);var al=Math.min(.6,.18+P.fan*.22);g.addColorStop(0,'rgba(70,215,220,'+al+')');g.addColorStop(1,'rgba(70,215,220,0)');ctx.fillStyle=g;ctx.fillRect(300,268,360,80)}
+    var bg=ctx.createLinearGradient(0,124,0,270);bg.addColorStop(0,'#fdfbf5');bg.addColorStop(.55,'#ebe5d6');bg.addColorStop(1,'#c9bfaa');
+    ctx.fillStyle=bg;ctx.fill(BODY);ctx.lineWidth=2/k;ctx.strokeStyle='#4a4236';ctx.stroke(BODY);
+    ctx.save();ctx.clip(BODY);ctx.fillStyle='#1d1812';ctx.beginPath();ctx.arc(250,250,58,0,TWO);ctx.arc(730,250,58,0,TWO);ctx.fill();ctx.restore();
+    [250,730].forEach(function(cx){
+      ctx.save();ctx.translate(cx,250);
+      ctx.fillStyle='#14110d';ctx.beginPath();ctx.arc(0,0,50,0,TWO);ctx.fill();
+      ctx.fillStyle='#bdb7aa';ctx.beginPath();ctx.arc(0,0,35,0,TWO);ctx.fill();
+      ctx.rotate(S.wang);ctx.strokeStyle='#6f695e';ctx.lineWidth=7;ctx.lineCap='round';
+      for(var i=0;i<5;i++){ctx.rotate(TWO/5);ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(0,-26);ctx.stroke()}
+      ctx.fillStyle='#3a352d';ctx.beginPath();ctx.arc(0,0,8,0,TWO);ctx.fill();
+      ctx.restore()});
+    var gl=ctx.createLinearGradient(0,133,0,178);gl.addColorStop(0,'#f6dc8e');gl.addColorStop(.6,'#c39a3a');gl.addColorStop(1,'#85601a');
+    ctx.globalAlpha=.85;ctx.fillStyle=gl;ctx.fill(CANOPY);ctx.globalAlpha=1;ctx.strokeStyle='#4a3810';ctx.lineWidth=1.5/k;ctx.stroke(CANOPY);
+    ctx.strokeStyle='#fffdf4';ctx.lineWidth=3/k;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(826,208);ctx.quadraticCurveTo(846,212,861,223);ctx.stroke();
+    ctx.restore();
+  }
+  function drawParts(){
+    for(var i=0;i<S.parts.length;i++){var p=S.parts[i],a=p.life/p.max,s=toS(p.x,p.y);
+      if(p.type==='spark'){ctx.fillStyle='rgba(255,'+(150+a*80|0)+',60,'+a+')';ctx.fillRect(s[0],s[1],2,2)}
+      else{ctx.fillStyle=p.type==='smoke'?'rgba(200,190,175,'+a*.35+')':'rgba(255,253,246,'+a*.7+')';ctx.beginPath();ctx.arc(s[0],s[1],Math.max(1,p.r*S.cam.z),0,TWO);ctx.fill()}}
+  }
+  function drawSpeed(){
+    if(reduce)return; var sp=Math.hypot(S.mode==='arc'||S.mode==='run'?S.v:S.vx, S.mode==='fly'?S.vy:0);
+    if(S.mode==='arc'){sp=Math.abs(S.v)}
+    if(sp<6)return;
+    var dx,dy;
+    if(S.mode==='arc'){dx=Math.cos(S.th);dy=-Math.sin(S.th)} else if(S.mode==='fly'){dx=S.vx;dy=-S.vy;var l=Math.hypot(dx,dy)||1;dx/=l;dy/=l} else {dx=1;dy=0}
+    ctx.strokeStyle='rgba(255,246,225,'+Math.min(.22,sp/110)+')';ctx.lineWidth=1.5;ctx.beginPath();
+    for(var i=0;i<lines.length;i++){var L=lines[i];
+      L[0]=(L[0]-dx*sp*.9+W*3)%W; L[1]=(L[1]-dy*sp*.9+H*3)%H;
+      var len=sp*(1.2+L[2]*1.6);ctx.moveTo(L[0],L[1]);ctx.lineTo(L[0]+dx*len,L[1]+dy*len)}
+    ctx.stroke();
+  }
+  function txt(t,x,y,font,col,al){ctx.font=font;ctx.fillStyle=col;ctx.textAlign=al||'left';ctx.fillText(t,x,y)}
+  function drawHUD(){
+    var v=Math.abs(S.mode==='fly'||S.mode==='landed'||S.mode==='done'?S.vx:S.v), kmh=v*3.6;
+    if(S.mode==='fly')kmh=Math.hypot(S.vx,S.vy)*3.6;
+    var cx=118,cy=452,r=70,a0=Math.PI*.8,a1=Math.PI*2.2,f=Math.min(1,kmh/120);
+    ctx.lineCap='round';ctx.lineWidth=11;ctx.strokeStyle='rgba(255,246,225,.14)';ctx.beginPath();ctx.arc(cx,cy,r,a0,a1);ctx.stroke();
+    var gr=ctx.createLinearGradient(cx-r,cy,cx+r,cy);gr.addColorStop(0,'#46d7dc');gr.addColorStop(1,'#ff6a3d');
+    ctx.strokeStyle=gr;ctx.beginPath();ctx.arc(cx,cy,r,a0,a0+(a1-a0)*f);ctx.stroke();
+    ctx.lineWidth=2;ctx.strokeStyle='rgba(255,246,225,.45)';
+    for(var i=0;i<=6;i++){var an=a0+(a1-a0)*i/6;ctx.beginPath();ctx.moveTo(cx+Math.cos(an)*(r-14),cy+Math.sin(an)*(r-14));ctx.lineTo(cx+Math.cos(an)*(r-22),cy+Math.sin(an)*(r-22));ctx.stroke()}
+    txt(String(Math.round(kmh)),cx,cy+10,'800 46px "Big Shoulders Display",Impact,sans-serif','#fff6e2','center');
+    txt('KM/H',cx,cy+30,'600 12px "IBM Plex Mono",monospace','rgba(255,246,225,.7)','center');
+    txt(Math.round(kmh/1.609)+' MPH',cx,cy+50,'500 11px "IBM Plex Mono",monospace','rgba(255,246,225,.55)','center');
+    /* push meter */
+    var bx=W-250,by=H-62,bw=200;
+    txt('RAMP PUSH',bx,by-12,'600 12px "IBM Plex Mono",monospace','rgba(255,246,225,.7)');
+    var ng=S.mode==='arc'?Math.max(0,S.ng):0;
+    ctx.fillStyle='rgba(255,246,225,.14)';ctx.fillRect(bx,by,bw,12);
+    ctx.fillStyle=ng>0&&S.slip?'#ff6a3d':'#ffbe5a';ctx.fillRect(bx,by,bw*Math.min(1,ng/5),12);
+    txt((S.mode==='arc'?ng.toFixed(1):'0.0')+'× weight',bx+bw,by+34,'700 20px "Big Shoulders Display",Impact,sans-serif','#fff6e2','right');
+    /* indicators */
+    var ix=24,iy=34;
+    ctx.fillStyle=P.fan>0?'#46d7dc':'#5a5248';ctx.beginPath();ctx.arc(ix,iy,6,0,TWO);ctx.fill();
+    txt('FANS '+P.fan.toFixed(1)+'×',ix+14,iy+4,'600 12px "IBM Plex Mono",monospace','rgba(255,246,225,.85)');
+    ctx.fillStyle=S.fire?'#ff6a3d':(P.thr?'#ffbe5a':'#5a5248');ctx.beginPath();ctx.arc(ix,iy+24,6,0,TWO);ctx.fill();
+    txt(P.thr?(S.fire?'THRUSTERS FIRING':'THRUSTERS ARMED'):'THRUSTERS OFF',ix+14,iy+28,'600 12px "IBM Plex Mono",monospace','rgba(255,246,225,.85)');
+    /* top right */
+    txt('HEIGHT '+Math.max(0,S.y-CGH).toFixed(0)+' m',W-24,38,'600 14px "IBM Plex Mono",monospace','rgba(255,246,225,.85)','right');
+    if(S.mode==='fly')txt('AIR TIME '+S.flightT.toFixed(1)+' s',W-24,58,'600 12px "IBM Plex Mono",monospace','rgba(255,246,225,.6)','right');
+    /* banner */
+    var names=['READY','RUN-UP','CLIMB','UPSIDE DOWN','FLIP','LANDING'];
+    ctx.save();ctx.textAlign='center';
+    txt(names[Math.max(0,S.phase)],W/2,40,'800 28px "Big Shoulders Display",Impact,sans-serif','#fff6e2','center');
+    if(S.slip&&(S.mode==='arc'||S.mode==='run'))txt('TYRES AT THEIR LIMIT',W/2,64,'700 14px "IBM Plex Mono",monospace','#ff6a3d','center');
+    ctx.restore();
+    if(S.flash&&S.flashT>0){ctx.globalAlpha=Math.min(1,S.flashT*1.5);txt(S.flash,W/2,H/2-60,'800 64px "Big Shoulders Display",Impact,sans-serif',S.flash==='WHEELS DOWN'?'#7bd38a':(S.flash==='AIRBORNE'?'#ffbe5a':'#ff6a3d'),'center');ctx.globalAlpha=1}
+    if(S.mode==='idle'){ctx.fillStyle='rgba(10,8,6,.55)';ctx.fillRect(W/2-190,H/2+20,380,52);txt('PRESS LAUNCH BELOW',W/2,H/2+54,'800 28px "Big Shoulders Display",Impact,sans-serif','#fff6e2','center')}
+  }
+  function draw(){
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    var sh=S.shake>0?S.shake*8:0;
+    ctx.save();if(sh)ctx.translate((Math.random()-.5)*sh,(Math.random()-.5)*sh);
+    drawScene();drawTrail();drawCar();drawParts();drawSpeed();
+    ctx.restore();
+    var vg=ctx.createRadialGradient(W/2,H/2,H*.35,W/2,H/2,H*.85);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.55)');ctx.fillStyle=vg;ctx.fillRect(0,0,W,H);
+    drawHUD();
+  }
+
+  /* ---------- UI ---------- */
+  var PH_NAMES=['','Run-up','Climb','Upside down','Flip','Landing'];
+  function phaseOf(){var m=S.mode; if(m==='idle')return 0; if(m==='run')return 1; if(m==='arc')return S.th<Math.PI/2?2:3; if(m==='fly')return 4; return 5}
+  function txtFor(ph){
+    var f=P.fan.toFixed(1);
+    if(ph===0)return 'Set the entry speed and the fan suction, then press Launch. You can change the sliders while the car is moving.';
+    if(ph===1)return 'The motors push the car forward, but tyres can only pass on a push up to μ × the force pressing them onto the road. Fans add to that pressing force. Grip limit here is '+(MU*(1+P.fan)).toFixed(1)+' g. Tesla quotes 0 to 60 mph in under 1.6 s for the Performance version. That is about 1.7 g of average push, which is the motor limit this model uses.';
+    if(ph===2)return 'On a curve the car wants to go straight, so the ramp must push it inward. That push is the centripetal force, m·v²/R. It is the same reason you are pressed into your seat on a roundabout. Gravity also starts pulling the car back down the slope, so the tyres need grip to keep climbing.';
+    if(ph===3)return 'Past the vertical wall, gravity pulls the car away from the ramp. Only speed or the fans can keep it pressed on. A roller-coaster loop uses speed alone. Tesla says its fans can hold the car upside down even when it is stationary. In this model the fans add '+f+' × the car’s weight.';
+    if(ph===4)return 'The ramp ends, so the car is now a projectile. Gravity (9.81 m/s²) bends its path into a parabola. Cold-gas thrusters push air out and the air pushes the car back (Newton’s third law). '+(P.thr?'Here they only adjust the spin so the car turns exactly the right amount before touchdown. SpaceX’s Falcon 9 uses nitrogen cold-gas thrusters to turn itself in a similar way.':'The thrusters are off, so the car keeps the spin it had leaving the ramp.');
+    return resultText();
+  }
+  function resultText(){
+    if(S.res==='clean')return 'Wheels-down, '+Math.abs(S.err).toFixed(0)+'° off level. Landing works only if the car is within a few degrees of level at touchdown, so the spin has to be set early in the flight.';
+    if(S.res==='hard')return 'Landed '+Math.abs(S.err).toFixed(0)+'° off level. That is a hard, tilted landing. Real cars land safely only within a small angle of level.';
+    if(S.res==='crash')return 'Landed '+Math.abs(S.err).toFixed(0)+'° off level, so the car comes down on its side or roof. '+(P.thr?'':'With the thrusters off nothing changes the spin, so this is what would happen. ')+'Try turning the thrusters on.';
+    if(S.res==='ramp')return 'The car lost contact with the wall and fell back onto the ramp. With too little force pressing it on, it cannot stay on the steep part. The fans supply that force.';
+    if(S.res==='slipped')return 'The tyres could not hold the car on the steep part and it rolled back. Grip is μ × the push into the ramp, so more fan suction or more speed fixes it.';
+    return 'Press Launch.';
+  }
+  function eqFor(){
+    var m=S.mode,c=Math.cos(S.th);
+    if(m==='idle')return 'Grip limit = μ × (weight + fan push)';
+    if(m==='run')return 'Grip limit = μ × (1 + fan) = '+MU.toFixed(1)+' × (1 + '+P.fan.toFixed(1)+') = '+(MU*(1+P.fan)).toFixed(2)+' g\nMotor push = '+(A_MOT/G).toFixed(2)+' g';
+    if(m==='arc'){var a=S.v*S.v/(G*R);return 'Push into ramp = v²/(g·R) + cosθ + fan\n= '+a.toFixed(2)+' '+(c<0?'− ':'+ ')+Math.abs(c).toFixed(2)+' + '+P.fan.toFixed(2)+' = '+S.ng.toFixed(2)+' × weight\nAngle θ = '+(S.th*57.2958).toFixed(0)+'°'}
+    if(m==='fly')return 'Spin needed = (turn left to do) ÷ (time to ground)\nSpin now = '+(S.om*57.2958).toFixed(0)+'°/s, needed = '+(S.omNeeded*57.2958).toFixed(0)+'°/s';
+    if(m==='roll')return 'Grip was less than the push needed to hold the car.';
+    return 'Angle off level at touchdown = '+Math.abs(S.err).toFixed(0)+'°';
+  }
+  function pushUI(){
+    var ph=phaseOf();
+    if(ph!==S.phase||S.phase===0&&!S.shown){S.shown=true;S.phase=ph;$('#simTxt').textContent=txtFor(ph);
+      var lis=document.querySelectorAll('#simPhases li');for(var i=0;i<lis.length;i++){var n=i+1;lis[i].removeAttribute('aria-current');lis[i].classList.toggle('done',n<ph);if(n===ph)lis[i].setAttribute('aria-current','step')}}
+    if(S.mode==='landed'||S.mode==='done'||S.mode==='roll'){$('#simTxt').textContent=resultText()}
+    var v=S.mode==='fly'?Math.hypot(S.vx,S.vy):(S.mode==='landed'||S.mode==='done')?Math.abs(S.vx):Math.abs(S.v);
+    $('#rdSpeed').textContent=(v*3.6).toFixed(0)+' km/h';
+    $('#rdHeight').textContent=Math.max(0,S.y-CGH).toFixed(1)+' m';
+    $('#rdPush').textContent=S.mode==='arc'?S.ng.toFixed(2)+'×':'—';
+    $('#rdFan').textContent=P.fan.toFixed(1)+'×';
+    $('#rdAngle').textContent=Math.round(((S.phi*57.2958)%360+360)%360)+'°';
+    var spin=S.mode==='fly'||S.mode==='landed'?S.om:(S.mode==='arc'?S.v/R:0);
+    $('#rdSpin').textContent=Math.round(spin*57.2958)+'°/s';
+    var have=S.have,need=S.need;
+    if(S.mode==='arc'||S.mode==='run'){$('#rdGrip').textContent='needs '+need.toFixed(2)+' g, has '+have.toFixed(2)+' g';var ratio=need>0?have/need:2;var fill=$('#gripFill');fill.style.width=Math.min(100,ratio*50)+'%';fill.style.background=ratio>=1?'var(--ok)':'var(--bad)'}
+    else{$('#rdGrip').textContent='—';$('#gripFill').style.width='0%'}
+    $('#simEq').textContent=eqFor();
+    var re=$('#simRes');
+    if(S.mode==='done'||S.mode==='landed'){re.hidden=false;re.textContent=S.res==='clean'?'Result: clean wheels-down landing':S.res==='hard'?'Result: hard landing':S.res==='crash'?'Result: landed on its side or roof':S.res==='ramp'?'Result: fell back onto the ramp':'Result: slipped back down'}
+    else re.hidden=true;
+  }
+
+  function loop(ts){
+    raf=requestAnimationFrame(loop);
+    var dt=Math.min(0.05,(ts-last)/1000||0.016);last=ts;
+    acc+=dt*(P.slow?0.25:1);var h=1/240,n=0;
+    while(acc>=h&&n<60){if(S.mode!=='idle'&&S.mode!=='done')step(h);acc-=h;n++}
+    if(n>=60)acc=0;
+    var ph=S.phase,z=9,tx=-2,ty=13,m=S.mode;
+    if(m==='idle'){z=10.5;tx=-2;ty=15}
+    else if(m==='run'){z=14;tx=S.x+9;ty=7}
+    else if(m==='arc'||m==='fly'){z=S.y>6?15.5:12;tx=S.x-(m==='arc'?Math.cos(S.th)*3:S.vx*.25);ty=Math.max(5,S.y-(m==='fly'?S.vy*.2:0))}
+    else {z=12;tx=S.x;ty=5}
+    var k=1-Math.exp(-4*dt);S.cam.x+=(tx-S.cam.x)*k;S.cam.y+=(ty-S.cam.y)*k;S.cam.z+=(z-S.cam.z)*k;
+    if(S.shake>0)S.shake=Math.max(0,S.shake-dt*1.8);
+    if(S.flashT>0)S.flashT-=dt;
+    draw();
+    uiT+=dt;if(uiT>0.08){uiT=0;pushUI()}
+  }
+  function fit(){dpr=Math.min(2,window.devicePixelRatio||1);cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr)}
+
+  function launch(){if(S.mode==='idle'||S.mode==='done'||S.mode==='roll'||S.mode==='landed'){var keep=true;reset();S.mode='run';S.phase=-1;fl('GO')}}
+  function bind(){
+    $('#simGo').addEventListener('click',launch);
+    $('#simReset').addEventListener('click',function(){reset()});
+    var sp=$('#simSpeed'),fa=$('#simFan'),th=$('#simThr'),sl=$('#simSlow');
+    function sync(){P.vT=+sp.value;P.fan=+fa.value;P.thr=th.checked;P.slow=sl.checked;
+      $('#vSpeed').textContent=Math.round(P.vT*3.6)+' km/h';$('#vFan').textContent=P.fan.toFixed(1)+'× car weight'}
+    [sp,fa].forEach(function(e){e.addEventListener('input',sync)});[th,sl].forEach(function(e){e.addEventListener('change',sync)});
+    function preset(f,t,s){fa.value=f;th.checked=t;if(s)sp.value=s;sync();reset()}
+    $('#pDemo').addEventListener('click',function(){preset(1,true,12)});
+    $('#pNoFan').addEventListener('click',function(){preset(0,true,12)});
+    $('#pNoThr').addEventListener('click',function(){preset(1,false,12)});
+    sync();
+  }
+  window.RoadsterSim={
+    start:function(){if(!raf){last=performance.now();raf=requestAnimationFrame(loop)}},
+    stop:function(){if(raf){cancelAnimationFrame(raf);raf=null}},
+    state:function(){return S},params:function(){return P},launch:launch
+  };
+  fit();reset();bind();
+  window.addEventListener('resize',fit);
+  /* draw one still frame so the tab is complete at rest */
+  draw();
+})();
+</script>
+
+</body></html>
